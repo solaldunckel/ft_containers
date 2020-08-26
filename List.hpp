@@ -15,17 +15,30 @@ namespace ft {
     typedef T* const const_pointer;
     typedef ListIterator<T> iterator;
 		typedef ListIterator<const T> const_iterator;
-		typedef ReverseIterator<iterator> reverse_iterator;
-		typedef ReverseIterator<const_iterator> const_reverse_iterator;
+		typedef ReverseIterator<T> reverse_iterator;
+		typedef ReverseIterator<const T> const_reverse_iterator;
     typedef size_t size_type;
 
-    List() : head_(NULL), tail_(NULL), size_(0) {};
-    List(size_type n, const value_type& val = value_type()) {
+    List() :size_(0) {
+      head_ = new DoubleLinkedList<T>();
+      tail_ = head_;
+    };
+
+    List(size_type n, const value_type& val) {
+      DoubleLinkedList<T> *add = new DoubleLinkedList<T>;
+
+      head_ = add;
+      tail_ = add;
+      size_ = 0;
       insert(iterator(head_), n, val);
     }; // Fill constructor
 
     template <class InputIterator>
     List(InputIterator first, InputIterator last) {
+      DoubleLinkedList<T> *add = new DoubleLinkedList<T>;
+      head_ = add;
+      tail_ = add;
+      size_ = 0;
       insert(iterator(head_), first, last);
     };
 
@@ -34,21 +47,21 @@ namespace ft {
     };
 
     ~List() {
-      clear();
+      // clear();
       // erase(iterator(head_), iterator(tail_));
     };
 
     List& operator = (const List& x) {}; // Assignement
 
     iterator begin() { return iterator(head_); };
-    iterator end() { return iterator(tail_->next_); };
+    iterator end() { return iterator(tail_); };
     const_iterator begin() const { return iterator(head_); };
     const_iterator end() const { return iterator(tail_); };
 
-    reverse_iterator rbegin() { return reverse_iterator(head_); };
-    reverse_iterator rend() { return reverse_iterator(tail_); };
-    const_reverse_iterator rbegin() const { return reverse_iterator(head_); };
-    const_reverse_iterator rend() const { return reverse_iterator(tail_); };
+    reverse_iterator rbegin() { return reverse_iterator(tail_); };
+    reverse_iterator rend() { return reverse_iterator(head_); };
+    const_reverse_iterator rbegin() const { return reverse_iterator(tail_); };
+    const_reverse_iterator rend() const { return reverse_iterator(head_); };
 
     // Capacity
 
@@ -81,14 +94,7 @@ namespace ft {
     };
 
     void push_front (const value_type& val) {
-      DoubleLinkedList<T> *add = new DoubleLinkedList<T>(NULL, head_, val);
-
-      if (!size_)
-        tail_ = add;
-      else
-        head_->prev_ = add;
-      head_ = add;
-      size_++;
+      insert(begin(), val);
     };
 
     void pop_front() {
@@ -97,7 +103,7 @@ namespace ft {
 
         head_ = head_->next_;;
         if (head_)
-          head_->prev = NULL;
+          head_->prev_ = NULL;
         else {
           head_ = NULL;
           tail_ = NULL;
@@ -108,17 +114,17 @@ namespace ft {
     };
 
     void push_back (const value_type& val) {
-      DoubleLinkedList<T> *add = new DoubleLinkedList<T>(tail_, NULL, val);
+      // DoubleLinkedList<T> *add = new DoubleLinkedList<T>(tail_, NULL, val);
 
-      if (!size_) {
-        head_ = add;
-        tail_ = add;
-      }
-      else {
-        tail_->next_ = add;
-        tail_ = tail_->next_;
-      }
-      size_++;
+      // if (!size_) {
+      //   head_ = add;
+      //   tail_ = add;
+      // }
+      // else {
+      //   tail_->next_ = add;
+      //   tail_ = tail_->next_;
+      // }
+      // size_++;
     };
 
     void pop_back() {
@@ -138,11 +144,22 @@ namespace ft {
     };
 
     iterator insert (iterator position, const value_type& val) {
-      
+      DoubleLinkedList<T> *add = new DoubleLinkedList<T>(position.getPtr()->prev_, position.getPtr());
+      add->value_ = val;
+      if (add->prev_)
+        add->prev_->next_ = add;
+      else
+        head_ = add;
+      add->next_->prev_ = add;
+      size_++;
+      return iterator(add);
     };
 
     void insert (iterator position, size_type n, const value_type& val) {
-      
+      while (n) {
+        insert(position, val);
+        n--;
+      }
     };
 
     template <class InputIterator>
@@ -219,6 +236,8 @@ namespace ft {
    private:
     DoubleLinkedList<T> *head_;
     DoubleLinkedList<T> *tail_;
+    DoubleLinkedList<T> *start_;
+    DoubleLinkedList<T> *end_;
     size_type size_;
   };
 }

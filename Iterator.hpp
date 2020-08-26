@@ -2,14 +2,15 @@
 # define ITERATOR_HPP
 
 namespace ft {
-  template <typename T>
+  template <class T>
   struct DoubleLinkedList {
     DoubleLinkedList *prev_;
     DoubleLinkedList *next_;
     T value_;
 
-    DoubleLinkedList(DoubleLinkedList *prev, DoubleLinkedList *next, const T &val)
-      : prev_(prev), next_(next), value_(val) {};
+    DoubleLinkedList() : prev_(NULL), next_(NULL) {};
+    DoubleLinkedList(DoubleLinkedList *prev, DoubleLinkedList *next)
+      : prev_(prev), next_(next) {};
   };
 
   template <typename T>
@@ -76,59 +77,68 @@ namespace ft {
     DoubleLinkedList<T> *ptr_;
   };
 
-  template <class Iterator>
+  template <typename T>
   class ReverseIterator {
    public:
-    typedef Iterator iterator_type;
-    typedef typename Iterator::difference_type difference_type;
-		typedef typename Iterator::value_type value_type;
-		typedef typename Iterator::pointer pointer;
-		typedef typename Iterator::reference reference;
-		typedef typename Iterator::iterator_category iterator_category;
+    typedef ReverseIterator<T> self_type;
+    typedef std::ptrdiff_t difference_type;
+    typedef T value_type;
+    typedef T& reference;
+    typedef T* pointer;
+    typedef std::bidirectional_iterator_tag iterator_category;
 
-    ReverseIterator() {};
-    ReverseIterator(Iterator ptr) : ptr_(ptr) {};
-    ReverseIterator(ReverseIterator<Iterator> &copy) : ptr_(copy.ptr_) {};
+    ReverseIterator() : ptr_(NULL) {};
+    ReverseIterator(DoubleLinkedList<T> *ptr) : ptr_(ptr) {};
+    ReverseIterator(const self_type &copy) : ptr_(copy.ptr_) {};
+
     ~ReverseIterator() {};
 
-    iterator_type base() const {
-      return ptr_;
-    };
-
-    reference operator*() const {
-      Iterator copy(ptr_);
-      ptr_--;
-      return *copy;
-    };
-
-    ReverseIterator<Iterator>& operator++() {
-      ptr_--;
+    self_type operator ++ () {
+			ptr_ = ptr_->prev_;
       return *this;
     };
 
-    ReverseIterator<Iterator>& operator++(int) {
-      ReverseIterator<Iterator> tmp = *this;
-      ++(*this);
+    self_type operator ++ (int rhs) {
+      self_type tmp(*this);
+      ptr_ = ptr_->prev_;
       return tmp;
     };
 
-    ReverseIterator<Iterator>& operator--() {
-      ptr_++;
+    self_type operator -- () {
+      self_type i = *this;
+      ptr_ = ptr_->next_;
+      return i;
+    };
+
+    self_type operator -- (int rhs) {
+      ptr_ = ptr_->next_;
       return *this;
     };
 
-    ReverseIterator<Iterator>& operator--(int) {
-      ReverseIterator<Iterator> tmp = *this;
-      --(*this);
-      return tmp;
+    reference operator *  () {
+      return ptr_->value_;
     };
 
-    pointer operator->() const {
-      return &(operator*());
+    pointer   operator -> () {
+      return &ptr_->value_;
     };
+
+    bool      operator == (const self_type &rhs) {
+      return ptr_ == rhs.ptr_;
+    };
+
+    bool      operator != (const self_type &rhs) {
+      return ptr_ != rhs.ptr_;
+    };
+
+    void      operator =  (const self_type &rhs) {
+      ptr_ = rhs;
+    };
+
+    DoubleLinkedList<T>* getPtr() { return ptr_; }
 
    private:
-    Iterator ptr_;
+    DoubleLinkedList<T> *ptr_;
   };
 }
 
