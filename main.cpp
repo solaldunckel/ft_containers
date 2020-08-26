@@ -1,42 +1,28 @@
-#include "Stack.hpp"
+#include "List.hpp"
 
 #include <iostream>
 #include <stack>
+#include <list>
+
+#define PRINT(x) (std::cout << x << std::endl)
 
 int main() {
-  std::stack<std::string> real_stack;
-  ft::stack<std::string> my_stack;
+  ft::List<int> test;
 
-  std::cout << real_stack.size() << std::endl;
-  std::cout << my_stack.size() << std::endl;
+  test.push_back(21);
+  test.push_back(42);
+  test.push_back(42);
+  test.push_back(42);
+  test.push_back(42);
+  test.push_back(42);
+  test.push_back(42);
+  test.push_back(33);
+  int i = 0;
+  for (ft::List<int>::iterator it = test.begin(); it != test.end(); it++) {
+    if (i > 50)
+      break;
+    i++;
+    PRINT(*it);
+  }
 
-  real_stack.push("Hello");
-  my_stack.push("Hello");
-
-  std::cout << real_stack.top() << std::endl;
-  std::cout << my_stack.top() << std::endl;
-
-  real_stack.push("World");
-  my_stack.push("World");
-
-  std::cout << real_stack.top() << std::endl;
-  std::cout << my_stack.top() << std::endl;
-
-  std::cout << real_stack.size() << std::endl;
-  std::cout << my_stack.size() << std::endl;
-
-  real_stack.pop();
-  my_stack.pop();
-
-  std::cout << real_stack.top() << std::endl;
-  std::cout << my_stack.top() << std::endl;
-
-  std::cout << real_stack.empty() << std::endl;
-  std::cout << my_stack.empty() << std::endl;
-
-  real_stack.pop();
-  my_stack.pop();
-
-  std::cout << real_stack.empty() << std::endl;
-  std::cout << my_stack.empty() << std::endl;
 }
