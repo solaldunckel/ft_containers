@@ -1,56 +1,87 @@
 #ifndef TESTS_H
 # define TESTS_H
 
-# define PRINT(x) (std::cout << x << std::endl)
-# define FCT_TEST(str) (printf("\n%-25s : ", "> " str))
+# include <iostream>
+# include <stack>
+# include <list>
+# include <vector>
+# include <stdio.h>
+
+# include "../List.hpp"
+# include "../Stack.hpp"
+# include "../Vector.hpp"
+
+# define FCT_TEST(str) (printf("\n%-4s%-15s%-4s", ">", str, ":"))
+
+# define PUSH(l, r, x)        (l.push(x), r.push(x))
+# define PUSH_FRONT(l, r, x)  (l.push_front(x), r.push_front(x))
+# define PUSH_BACK(l, r, x)   (l.push_back(x), r.push_back(x))
 
 # define RESET   "\033[0m"
 # define RED     "\033[31m"
 # define GREEN   "\033[32m"
 
-# include <iostream>
-# include <stack>
-# include <list>
-# include <stdio.h>
-
-# include "../List.hpp"
+# define OK (printf(GREEN "[OK] " RESET))
+# define KO (printf(RED "[KO] " RESET))
 
 template <typename T>
-void test(T first, T second) {
-  if (first == second) {
-    printf(GREEN "[OK] " RESET);
-  }
+void TEST(T first, T second) {
+  if (first == second)
+    OK;
   else
-    printf(RED "[KO] " RESET);
-}
-
-template <typename MyIterator, typename ListIterator >
-int test_iterate(ListIterator begin_real, ListIterator end_real, MyIterator begin_mine, MyIterator end_mine) {
-  int count = 0;
-
-  while (begin_real != end_real && begin_mine != end_mine) {
-    if (*begin_real != *begin_mine)
-      return printf(RED "[KO] " RESET);
-    begin_real++;
-    begin_mine++;
-    count++;
-  }
-  return printf(GREEN "[OK] " RESET);;
+    KO;
 }
 
 template <typename T>
-void test_debug(T first, T second) {
-  if (first == second) {
-    printf(GREEN "[OK] " RESET);
-  }
-  else {
-    printf(RED "[KO] " RESET);
-    std::cout << "real : " << first << " / mine : " << second;
-  }
-    
+void TEST_DEBUG(T first, T second) {
+  if (first != second)
+    std::cout << "real : " << first << " / mine : " << second << std::endl;
 }
 
-// LIST
-void test_list();
+template <class list>
+void PRINT_LIST(list &l) {
+	for (typename list::iterator it = l.begin(); it != l.end(); ++it)
+    std::cout << *it << " ";
+	std::cout << std::endl;
+}
+
+template <class list>
+void PRINT_REV(list l) {
+	for (typename list::reverse_iterator it = l.rbegin(); it != l.rend(); ++it)
+		std::cout << *it << " ";
+	std::cout << std::endl;
+}
+
+template <class list1, class list2>
+void ITERATE(list1 &real, list2 &mine) {
+  typename list1::iterator it1 = real.begin();
+  typename list2::iterator it2 = mine.begin();
+
+  while (it1 != real.end()) {
+    if (*it1 != *it2) {
+      KO;
+      return ;
+    }
+    it1++;
+    it2++;
+  }
+  OK;
+}
+
+template <class list1, class list2>
+void ITERATE_REV(list1 &real, list2 &mine) {
+  typename list1::reverse_iterator it1 = real.rbegin();
+  typename list2::reverse_iterator it2 = mine.rbegin();
+
+  while (it1 != real.rend() && it2 != mine.rend()) {
+    if (*it1 != *it2) {
+      KO;
+      return ;
+    }
+    it1++;
+    it2++;
+  }
+  OK;;
+}
 
 #endif

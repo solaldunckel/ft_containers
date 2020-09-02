@@ -6,36 +6,42 @@
 #    By: sdunckel <sdunckel@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/12/06 18:09:59 by sdunckel          #+#    #+#              #
-#    Updated: 2020/08/26 15:31:22 by sdunckel         ###   ########.fr        #
+#    Updated: 2020/08/31 23:54:20 by sdunckel         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME			= ft_containers
 
-SRCS			= \
-					tests/main.cpp \
-					tests/list.cpp
+LIST			= list
+STACK			= stack
+VECTOR		= vector
+MAP				= map
 
-OBJS			= ${SRCS:.cpp=.o}
+SRCS			= \
+						tests/$(LIST).cpp
 
 CC				= clang++
-CFLAGS 		= # -Wall -Wextra -Werror
+CFLAGS 		= -Wall -Wextra -Werror
 RM				= rm -f
 
-all:			$(NAME)
+all:			$(LIST)
 
-$(NAME):		$(OBJS)
-				$(CC) $(CFLAGS) $(OBJS) -o $(NAME)
+$(LIST):	compile
+					@${CC} ${CFLAGS} -o $@ tests/$@.cpp && ./$@
 
-%.o: %.cpp
-				${CC} ${CFLAGS} -o $@ -c $<
+$(STACK):	compile
+					@${CC} ${CFLAGS} -o $@ tests/$@.cpp && ./$@
+
+$(VECTOR):	compile
+					@${CC} ${CFLAGS} -o $@ tests/$@.cpp && ./$@
+
+compile:
 
 clean:
-				${RM} ${OBJS}
+					${RM} $(LIST) $(VECTOR) $(STACK)
 
-fclean:			clean
-				${RM} ${NAME}
+fclean:		clean
 
 re:				fclean all
 
-.PHONY: 		all fclean clean re
+.PHONY: 	all fclean clean re
