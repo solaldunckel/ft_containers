@@ -209,10 +209,10 @@ namespace ft {
       node_ *elem = position.ptr_;
       node_ *next = position.ptr_->next_;
 
-      if (position == end()) {
-        next = elem;
-        elem = elem->prev_;
-      }
+      // if (position == end()) {
+      //   next = elem;
+      //   elem = elem->prev_;
+      // }
       elem->prev_->next_ = next;
       next->prev_ = elem->prev_;
       delete elem;
@@ -426,7 +426,6 @@ namespace ft {
   bool operator== (const List<T>& lhs, const List<T>& rhs) {
     if (lhs.size() != rhs.size())
       return false;
-
     typename List<T>::iterator it1 = lhs.begin();
     typename List<T>::iterator it2 = rhs.begin();
 

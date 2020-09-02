@@ -6,7 +6,7 @@
 #    By: sdunckel <sdunckel@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/12/06 18:09:59 by sdunckel          #+#    #+#              #
-#    Updated: 2020/08/31 23:54:20 by sdunckel         ###   ########.fr        #
+#    Updated: 2020/09/02 11:26:56 by sdunckel         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,17 +14,15 @@ NAME			= ft_containers
 
 LIST			= list
 STACK			= stack
+QUEUE			= queue
 VECTOR		= vector
 MAP				= map
-
-SRCS			= \
-						tests/$(LIST).cpp
 
 CC				= clang++
 CFLAGS 		= -Wall -Wextra -Werror
 RM				= rm -f
 
-all:			$(LIST)
+all:			$(LIST) $(STACK)
 
 $(LIST):	compile
 					@${CC} ${CFLAGS} -o $@ tests/$@.cpp && ./$@

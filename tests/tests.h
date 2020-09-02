@@ -9,6 +9,7 @@
 
 # include "../List.hpp"
 # include "../Stack.hpp"
+# include "../Queue.hpp"
 # include "../Vector.hpp"
 
 # define FCT_TEST(str) (printf("\n%-4s%-15s%-4s", ">", str, ":"))
@@ -16,6 +17,8 @@
 # define PUSH(l, r, x)        (l.push(x), r.push(x))
 # define PUSH_FRONT(l, r, x)  (l.push_front(x), r.push_front(x))
 # define PUSH_BACK(l, r, x)   (l.push_back(x), r.push_back(x))
+
+# define POP(l, r) (l.pop(), r.pop())
 
 # define RESET   "\033[0m"
 # define RED     "\033[31m"
