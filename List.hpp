@@ -1,6 +1,7 @@
 #ifndef LIST_HPP
 # define LIST_HPP
 
+# include <memory>
 # include "Iterators.hpp"
 
 namespace ft {
@@ -81,11 +82,12 @@ namespace ft {
     const T operator * () { return this->ptr_->value_; };
   };
 
-  template <class T>
+  template <class T, class Alloc = std::allocator<T> >
   class List {
    public:
     typedef T           value_type;
     typedef size_t      size_type;
+    typedef Alloc       allocator_type;
 
     typedef value_type&         reference;
     typedef const value_type&   const_reference;
@@ -99,11 +101,13 @@ namespace ft {
 
     typedef typename iterator::difference_type     difference_type;
 
-    explicit List() {
-      elem_ = new node_();
+    explicit List(const allocator_type& alloc = allocator_type()) {
+      alloc_ = alloc;
+      elem_ = alloc::allocate(1);
+      // alloc_.construct(elem_, 0);
       elem_->prev_ = elem_;
       elem_->next_ = elem_;
-      elem_->value_ = T();
+      // elem_->value_ = T();
       size_ = 0;
     };
 
@@ -418,8 +422,9 @@ namespace ft {
    private:
     typedef Node<T> node_;
 
-    node_       *elem_;
-    size_type   size_;
+    node_           *elem_;
+    size_type       size_;
+    allocator_type  alloc_;
   };
 
   template <class T>
