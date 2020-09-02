@@ -131,6 +131,7 @@ namespace ft {
       elem_->prev_ = elem_;
       elem_->next_ = elem_;
       elem_->value_ = T();
+      size_ = 0;
       assign(x.begin(), x.end());
     };
 
@@ -140,7 +141,6 @@ namespace ft {
     };
 
     List& operator = (const List& x) {
-      // (void)x;
       assign(x.begin(), x.end());
       return *this;
     };
@@ -365,7 +365,7 @@ namespace ft {
 
     void sort() {
       iterator it1 = begin();
-			iterator it2 = ++begin();
+      iterator it2 = ++begin();
 
 			while (it2 != end())
 			{
@@ -384,7 +384,7 @@ namespace ft {
     template <class Compare>
     void sort (Compare comp) {
 			iterator it1 = begin();
-			iterator it2 = ++begin();
+      iterator it2 = ++begin();
 
 			while (it2 != end())
 			{
