@@ -5,6 +5,13 @@ void list_constructors() {
   ft::List<int> mine;
   ITERATE(real, mine);
 
+  std::list<int> real6(5);
+  ft::List<int> mine6(5);
+
+  std::list<int> real5(4, 100);
+  ft::List<int> mine5(4, 100);
+  ITERATE(real5, mine5);
+
   std::list<std::string> real2(12, "test");
   ft::List<std::string> mine2(12, "test");
   ITERATE(real2, mine2);
@@ -24,8 +31,6 @@ void list_push_front() {
   std::list<std::string> real;
   ft::List<std::string> mine;
 
-  TEST(real.front(), mine.front());
-  TEST(real.back(), mine.back());
   PUSH_FRONT(real, mine, "test");
   TEST(real.front(), mine.front());
   TEST(real.back(), mine.back());
@@ -42,8 +47,6 @@ void list_push_back() {
   std::list<std::string> real;
   ft::List<std::string> mine;
 
-  TEST(real.front(), mine.front());
-  TEST(real.back(), mine.back());
   PUSH_BACK(real, mine, "test");
   TEST(real.front(), mine.front());
   TEST(real.back(), mine.back());
@@ -105,6 +108,23 @@ void list_max_size() {
   std::list<std::list<int> > real3;
   ft::List<std::list<int> > mine3;
   TEST(real3.max_size(), mine3.max_size());
+}
+
+void list_erase() {
+  std::list<int> real;
+  ft::List<int> mine;
+  std::list<int>::iterator real_it;
+  ft::List<int>::iterator my_it;
+
+  PUSH_BACK(real, mine, 5);
+  PUSH_BACK(real, mine, 3);
+  real_it = real.erase(real.begin());
+  my_it = mine.erase(mine.begin());
+  TEST(*real_it, *my_it);
+  real_it = real.erase(real.begin());
+  my_it = mine.erase(mine.begin());
+  TEST(*real_it, *my_it);
+  TEST(my_it, mine.end());
 }
 
 bool compare_nocase (const std::string& first, const std::string& second)
@@ -390,6 +410,33 @@ void list_iterators() {
   mine.splice(++mine.begin(), mine_sp);
 
   TEST(*it_real, *it_mine);
+
+  std::list<int>::const_iterator cit_real = real.begin();
+  ft::List<int>::const_iterator cit_mine = mine.begin();
+  TEST(*(++cit_real), *(++cit_mine));
+}
+
+void list_operators() {
+  std::list<int> real;
+  std::list<int> real2;
+  ft::List<int> mine;
+  ft::List<int> mine2;
+
+  PUSH_BACK(real, real2, 15);
+  PUSH_BACK(mine, mine2, 15);
+  TEST(real == real2, mine == mine2);
+
+  PUSH_BACK(real, mine, 10);
+  PUSH_BACK(real2, mine2, 38);
+  TEST(real == real2, mine == mine2);
+  TEST(real < real2, mine < mine2);
+
+  PUSH_BACK(real, mine, 63);
+  PUSH_BACK(real2, mine2, 35);
+  TEST(real == real2, mine == mine2);
+  TEST(real <= real2, mine <= mine2);
+  TEST(real >= real2, mine >= mine2);
+  TEST(real != real2, mine != mine2);
 }
 
 int main() {
@@ -413,6 +460,9 @@ int main() {
   FCT_TEST("max_size");
   list_max_size();
 
+  FCT_TEST("erase");
+  list_erase();
+
   FCT_TEST("sort");
   list_sort();
 
@@ -433,6 +483,9 @@ int main() {
 
   FCT_TEST("iterators");
   list_iterators();
+
+  FCT_TEST("operators");
+  list_operators();
 
   std::cout << std::endl;
 }

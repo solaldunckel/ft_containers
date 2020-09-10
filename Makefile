@@ -6,23 +6,24 @@
 #    By: sdunckel <sdunckel@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/12/06 18:09:59 by sdunckel          #+#    #+#              #
-#    Updated: 2020/09/02 11:26:56 by sdunckel         ###   ########.fr        #
+#    Updated: 2020/09/10 03:01:40 by sdunckel         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME			= ft_containers
 
 LIST			= list
-STACK			= stack
-QUEUE			= queue
+STACK			= #stack
+QUEUE			= #queue
 VECTOR		= vector
 MAP				= map
+ALL				= $(LIST) $(STACK) $(QUEUE) $(VECTOR) $(MAP)
 
 CC				= clang++
-CFLAGS 		= -Wall -Wextra -Werror
+CFLAGS 		= -Wall -Wextra -Werror #-g -fsanitize=address
 RM				= rm -f
 
-all:			$(LIST) $(STACK)
+all:			$(ALL)
 
 $(LIST):	compile
 					@${CC} ${CFLAGS} -o $@ tests/$@.cpp && ./$@
@@ -30,13 +31,19 @@ $(LIST):	compile
 $(STACK):	compile
 					@${CC} ${CFLAGS} -o $@ tests/$@.cpp && ./$@
 
-$(VECTOR):	compile
+$(QUEUE):	
 					@${CC} ${CFLAGS} -o $@ tests/$@.cpp && ./$@
 
-compile:
+$(VECTOR): compile
+					@${CC} ${CFLAGS} -o $@ tests/$@.cpp && ./$@
+
+$(MAP):		compile
+					@${CC} ${CFLAGS} -o $@ tests/$@.cpp && ./$@
+
+compile:	
 
 clean:
-					${RM} $(LIST) $(VECTOR) $(STACK)
+					${RM} $(ALL)
 
 fclean:		clean
 

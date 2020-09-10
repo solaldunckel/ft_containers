@@ -5,12 +5,17 @@
 # include <stack>
 # include <list>
 # include <vector>
+# include <map>
 # include <stdio.h>
+
+# include "../Iterators.hpp"
+# include "../Utility.hpp"
 
 # include "../List.hpp"
 # include "../Stack.hpp"
 # include "../Queue.hpp"
 # include "../Vector.hpp"
+# include "../Map.hpp"
 
 # define FCT_TEST(str) (printf("\n%-4s%-15s%-4s", ">", str, ":"))
 
@@ -76,7 +81,7 @@ void ITERATE_REV(list1 &real, list2 &mine) {
   typename list1::reverse_iterator it1 = real.rbegin();
   typename list2::reverse_iterator it2 = mine.rbegin();
 
-  while (it1 != real.rend() && it2 != mine.rend()) {
+  while (it1 != real.rend()) {
     if (*it1 != *it2) {
       KO;
       return ;
