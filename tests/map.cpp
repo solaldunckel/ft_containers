@@ -8,11 +8,12 @@ int main() {
   // ft::pair<int, int> p1 = ft::make_pair("solal", 24);
 
   test[5] = 2;
-  test[122] = 4;
-  test[99] = 4;
-  test[3] = 4;
-  test[102] = 4;
-  test[3] = 8;
+  // test[122] = 4;
+  // test[99] = 4;
+  // test[3] = 4;
+  // test[102] = 4;
+  // test[1] = 8;
+  // test[2] = 8;
   // test.insert_test(5, 2);
 	// test.insert_test(122, 4);
 	// test.insert_test(99, 0);
@@ -28,11 +29,15 @@ int main() {
 	// test.insert_test(702, 0);
 	// test.insert_test(12, 0);
 
+  std::cout << test.count(5) << std::endl;
   ft::Map<int, int>::iterator my_it = test.begin();
 
  for (; my_it != test.end(); my_it++) {
     std::cout << my_it->first << "\n";
   }
+
+  std::cout << (my_it == --test.begin()) << std::endl;
+
 
   // test["hava"] = 25;
 
@@ -64,14 +69,14 @@ int main() {
   // std::cout << it3->first << std::endl;
   // std::cout << "equal to end : " << (it3 == test3.end()) << std::endl;
 
-  std::map<int, int> test2;
+  // std::map<int, int> test2;
 
-  test2[23] = 5;
+  // test2[23] = 5;
 
-  std::map<int, int>::iterator it = test2.begin();
-  --it;
-  std::cout << it->first << std::endl;
-  std::cout << (it == test2.end()) << std::endl;
+  // std::map<int, int>::iterator it = test2.begin();
+  // --it;
+  // std::cout << it->first << std::endl;
+  // std::cout << (it == test2.end()) << std::endl;
   // std::map<int, int>::iterator it2 = test2.begin();
 
   // std::cout << it2->first << std::endl;
