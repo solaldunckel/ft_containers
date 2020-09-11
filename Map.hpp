@@ -11,14 +11,15 @@
 namespace ft {
   template <class Key, class T>
   struct Tree {
+    bool                      s_;
     Tree                      *left_;
     Tree                      *right_;
     Tree                      *parent_;
     ft::pair<const Key, T>    pair_;
 
-    Tree() : left_(this), right_(this), parent_(nullptr), pair_(ft::pair<const Key, T>()) {};
+    Tree() : s_(true), left_(this), right_(this), parent_(nullptr), pair_(ft::pair<const Key, T>()) {};
     Tree(Tree *left, Tree *right, Tree *parent, const ft::pair<const Key, T> &pair)
-        : left_(left), right_(right), parent_(parent), pair_(pair) {};
+        : s_(false), left_(left), right_(right), parent_(parent), pair_(pair) {};
   };
 
   template <class Key, class T>
@@ -44,7 +45,9 @@ namespace ft {
     };
 
     self     operator ++ () {
-      if (ptr_->right_) {
+      if (ptr_->s_)
+        ptr_ = ptr_->left_;
+      else if (ptr_->right_) {
         ptr_ = ptr_->right_;
         while (ptr_->left_)
           ptr_ = ptr_->left_;
@@ -54,7 +57,7 @@ namespace ft {
 
         while (ptr_ == tmp->right_) {
           ptr_ = tmp;
-          tmp = ptr_->parent_;
+          tmp = tmp->parent_;
         }
         if (ptr_->right_ != tmp)
           ptr_ = tmp;
@@ -69,9 +72,8 @@ namespace ft {
     };
 
     self     operator -- () {
-      if (ptr_->parent_->parent_ == ptr_) {
+      if (ptr_->s_)
         ptr_ = ptr_->right_;
-      }
       else if (ptr_->left_) {
         ptr_ = ptr_->left_;
         while (ptr_->right_)
@@ -88,6 +90,20 @@ namespace ft {
       }
       return *this;
     };
+
+    // void debug() {
+    //   std::cout << "current : " << ptr_->pair_.first << " /// ";
+    //   std::cout << "parent : " << ptr_->parent_->pair_.first << " / left : ";
+    //   if (ptr_->left_)
+    //     std::cout << ptr_->left_->pair_.first;
+    //   else
+    //     std::cout << "nil";
+    //   std::cout << " / right : ";
+    //   if (ptr_->right_)
+    //     std::cout << ptr_->right_->pair_.first << std::endl;
+    //   else
+    //     std::cout << "nil" << std::endl;
+    // }
 
     self     operator -- (int) {
       self tmp = *this;
@@ -209,7 +225,6 @@ namespace ft {
     typedef std::ptrdiff_t                  difference_type;
     typedef size_t                          size_type;
 
-    // Constructors
    public:
     explicit Map(const key_compare& comp = key_compare(),
                   const allocator_type& alloc = allocator_type()) {
@@ -230,34 +245,41 @@ namespace ft {
       insert(first, last);
     };
 
-    // Map(const Map& x) {
+    Map(const Map& x) {
+      container_ = new tree();
+      alloc_ = x.alloc;
+      comp_ = x.comp;
+      size_ = 0;
+      insert(x.begin(), x.end());
+    };
 
-    // };
+    ~Map() {
+      clear();
+      delete container_;
+    };
 
-    Map& operator= (const Map& x);
-
-    // Iterators
+    Map& operator= (const Map& x) {
+      clear();
+      insert(x.begin(), x.end());
+    };
 
     iterator begin() { return iterator(get_left()); };
     iterator end() { return iterator(container_); };
     const_iterator begin() const { return const_iterator(get_left()); };
     const_iterator end() const { return const_iterator(container_); };
 
-    reverse_iterator rbegin() { return reverse_iterator(get_right()); };
-    reverse_iterator rend() { return reverse_iterator(container_); };
-    const_reverse_iterator rbegin() const { return const_reverse_iterator(get_right()); };
-    const_reverse_iterator rend() const { return const_reverse_iterator(container_); };
+    reverse_iterator rbegin() { return reverse_iterator(end()); };
+    reverse_iterator rend() { return reverse_iterator(begin()); };
+    const_reverse_iterator rbegin() const { return const_reverse_iterator(end()); };
+    const_reverse_iterator rend() const { return const_reverse_iterator(begin()); };
 
     mapped_type& operator[] (const key_type& k) {
       return (*((insert(make_pair(k, mapped_type()))).first)).second;
     };
 
-    // Capacity
     bool        empty() const     { return size_ == 0; };
     size_type   size() const      { return size_; };
-    size_type   max_size() const  {};
-
-    // Modifiers
+    size_type   max_size() const  { return std::numeric_limits<size_type>::max() / sizeof(tree);};
 
     pair<iterator, bool> insert (const value_type& val) {
       tree *exist = key_exists_recurse(get_root(), val.first);
@@ -287,9 +309,65 @@ namespace ft {
       }
     };
 
-    // void      erase(iterator position) {};
-    // size_type erase(const key_type& k) {};
-    // void      erase(iterator first, iterator last) {};
+    void      erase(iterator position) {
+      tree *current = position.ptr_;
+      tree *tmp = nullptr;
+
+      if (current->left_) {
+        tmp = current->left_;
+        while (tmp->right_)
+          tmp = tmp->right_;
+        if (tmp->parent_->right_ == tmp)
+          tmp->parent_->right_ = nullptr;
+        tmp->right_ = current->right_;
+        if (current->right_)
+          current->right_->parent_ = tmp;
+        if (current->left_ != tmp)
+          tmp->left_ = current->left_;
+        if (current->left_)
+          current->left_->parent_ = tmp;
+        tmp->parent_ = current->parent_;
+      }
+      else if (current->right_) {
+        tmp = current->right_;
+        tmp->parent_ = current->parent_;
+      }
+      if (current->parent_->left_ == current)
+        current->parent_->left_ = tmp;
+      else
+        current->parent_->right_ = tmp;
+      if (current == get_root())
+        container_->parent_ = tmp;
+      delete current;
+      size_--;
+      get_left_right();
+    };
+
+    size_type erase(const key_type& k) {
+      iterator it = begin();
+      iterator tmp;
+      size_type count = 0;
+
+      while (it != end()) {
+        if (!comp_(it->first, k) && !comp_(k, it->first)) {
+          tmp = it++;
+          erase(tmp);
+          count++;
+        }
+        else
+          it++;
+      }
+      return count;
+    };
+
+    void      erase(iterator first, iterator last) {
+      iterator tmp;
+
+      while (first != last) {
+        tmp = first++;
+        erase(tmp);
+      }
+    };
 
     void swap (Map& x) {
       tree *tmp;
@@ -304,7 +382,7 @@ namespace ft {
       x.container_ = tmp;
     };
 
-    void clear();
+    void clear() { erase(begin(), end()); };
 
     key_compare key_comp() const { return comp_; };
     value_compare value_comp() const { return comp_; };
@@ -329,14 +407,55 @@ namespace ft {
       return key_count_recurse(get_root(), k);
     };
 
-    iterator        lower_bound (const key_type& k);
-    const_iterator  lower_bound (const key_type& k) const;
+    iterator        lower_bound (const key_type& k) {
+      iterator it = begin();
 
-    iterator        upper_bound (const key_type& k);
-    const_iterator  upper_bound (const key_type& k) const;
+      while (it != end()) {
+        if (!comp_(it->first, k))
+          return it;
+        it++;
+      }
+      return it;
+    };
+    const_iterator  lower_bound (const key_type& k) const {
+      const_iterator it = begin();
 
-    pair<iterator, iterator>             equal_range (const key_type& k);
-    pair<const_iterator, const_iterator> equal_range (const key_type& k) const;
+      while (it != end()) {
+        if (!comp_(it->first, k))
+          return it;
+        it++;
+      }
+      return it;
+    };
+
+    iterator        upper_bound (const key_type& k) {
+      iterator it = begin();
+
+      while (it != end()) {
+        if (comp_(k, it->first))
+          return it;
+        it++;
+      }
+      return it;
+    };
+    const_iterator  upper_bound (const key_type& k) const {
+      const_iterator it = begin();
+
+      while (it != end()) {
+        if (comp_(k, it->first))
+          return it;
+        it++;
+      }
+      return it;
+    };
+
+    pair<iterator, iterator>             equal_range (const key_type& k) {
+      return make_pair(lower_bound(k), upper_bound(k));
+    };
+
+    pair<const_iterator, const_iterator> equal_range (const key_type& k) const {
+      return make_pair(lower_bound(k), upper_bound(k));
+    };;
 
    private:
     typedef Tree<Key, T>  tree;
@@ -347,34 +466,35 @@ namespace ft {
       if (!root)
         return nullptr;
       found = key_exists_recurse(root->left_, key);
-      if (root->pair_.first == key)
+      if (!comp_(root->pair_.first, key) && !comp_(key, root->pair_.first))
         found = root;
       if (!found)
         found = key_exists_recurse(root->right_, key);
 	    return found;
     }
 
-    size_type key_count_recurse(tree *root, key_type key) {
-      size_type found = 0;
-
+    size_type key_count_recurse(tree *root, key_type key) const {
       if (!root)
         return 0;
-      found = key_count_recurse(root->left_, key);
-      if (root->pair_.first == key)
-        found += 1;
-      found = key_count_recurse(root->right_, key);
-	    return found;
+      if (!comp_(root->pair_.first, key) && !comp_(key, root->pair_.first))
+        return 1;
+	    return key_count_recurse(root->left_, key) + key_count_recurse(root->right_, key);
     }
 
     void  get_left_right() {
-      tree *tmp = get_left();
+      tree *tmp = get_root();
 
-      while (tmp->left_)
+      if (!tmp) {
+        container_->left_ = container_;
+        container_->right_ = container_;
+        return ;
+      }
+      while (tmp && tmp->left_)
         tmp = tmp->left_;
       container_->left_ = tmp;
 
-      tmp = get_right();
-      while (tmp->right_)
+      tmp = get_root();
+      while (tmp && tmp->right_)
         tmp = tmp->right_;
       container_->right_ = tmp;
     }
@@ -414,9 +534,9 @@ namespace ft {
       return node;
     }
 
-    tree *get_root() { return container_->parent_; };
-    tree *get_left() { return container_->left_; };
-    tree *get_right() { return container_->right_; }
+    tree *get_root() const { return container_->parent_; };
+    tree *get_left() const { return container_->left_; };
+    tree *get_right() const { return container_->right_; }
 
     tree            *container_;
     allocator_type  alloc_;

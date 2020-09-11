@@ -3,7 +3,7 @@
 
 namespace ft {
   template <typename Iterator>
-  class ReverseIterator : public Iterator {
+  class ReverseIterator {
    public:
     typedef ReverseIterator    self_;
 
@@ -19,12 +19,12 @@ namespace ft {
     template <typename It>
     ReverseIterator(const ReverseIterator<It> &copy) : it_(copy.getIt()) {};
 
-    ~ReverseIterator() {};
+    virtual ~ReverseIterator() {};
 
     self_ &operator=(self_ const &other) {
-		  this->ptr_ = other.ptr_;
-		  return (*this);
-	  }
+      this->ptr_ = other.ptr_;
+      return (*this);
+    }
 
     self_     operator ++ () {
       --it_;
@@ -47,19 +47,19 @@ namespace ft {
 
     reference operator * () {
       Iterator tmp = it_;
-      return *tmp;
+      return *--tmp;
     };
     pointer   operator -> () {
       Iterator tmp = it_;
-      return *tmp;
+      return &*--tmp;
     };
     const reference operator * () const {
       Iterator tmp = it_;
-      return *tmp;
+      return *--tmp;
     };
     const pointer   operator ->() const {
       Iterator tmp = it_;
-      return *tmp;
+      return &*--tmp;
     };
 
     Iterator getIt() const { return it_; }

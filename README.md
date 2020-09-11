@@ -3,12 +3,11 @@
 
 ## List
 
-- Check allocator ?
-- Test operators
-- Test const
-- Check erase end()
+## Stack
 
-## Stack / Queue
+## Queue
 
-- SegF operators
-- Coplien ??
+## Vector
+
+## Map
+

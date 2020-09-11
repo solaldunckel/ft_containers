@@ -234,10 +234,10 @@ namespace ft {
     iterator end()                { return iterator(&container_[size_]); };
     const_iterator end() const    { return const_iterator(&container_[size_]); };
 
-    reverse_iterator rbegin()             { return reverse_iterator(&container_[size_ - 1]); };
-    reverse_iterator rend()               { return reverse_iterator(&container_[-1]); };
-    const_reverse_iterator rbegin() const { return const_reverse_iterator(&container_[size_ - 1]); };
-    const_reverse_iterator rend() const   { return const_reverse_iterator(&container_[-1]); };
+    reverse_iterator rbegin()             { return reverse_iterator(end()); };
+    reverse_iterator rend()               { return reverse_iterator(begin()); };
+    const_reverse_iterator rbegin() const { return const_reverse_iterator(end()); };
+    const_reverse_iterator rend() const   { return const_reverse_iterator(begin()); };
 
     size_type size() const      { return size_; };
     size_type max_size() const  {

@@ -3,41 +3,57 @@
 int main() {
   std::cout << "Map " << std::endl;
 
-  ft::Map<int, int> test;
+//   ft::Map<int, int> test;
 
-  // ft::pair<int, int> p1 = ft::make_pair("solal", 24);
+//   // ft::pair<int, int> p1 = ft::make_pair("solal", 24);
 
-  test[5] = 2;
-  // test[122] = 4;
-  // test[99] = 4;
-  // test[3] = 4;
-  // test[102] = 4;
-  // test[1] = 8;
-  // test[2] = 8;
-  // test.insert_test(5, 2);
-	// test.insert_test(122, 4);
-	// test.insert_test(99, 0);
-  // test.insert_test(3, 0);
-	// test.insert_test(102, 0);
-  // test.insert_test(-4, 0);
-  // test.insert_test(-7, 0);
-	// test.insert_test(135, 0);
-	// test.insert_test(104, 0);
-	// test.insert_test(101, 0);
-	// test.insert_test(148, 0);
-	// test.insert_test(123, 0);
-	// test.insert_test(702, 0);
-	// test.insert_test(12, 0);
+//   test[5] = 2;
+//   // test[122] = 4;
+//   test[102] = 4;
+//   test[99] = 4;
+//   test[3] = 4;
+//   test[101] = 4;
+//   test[1] = 8;
+//   test[2] = 8;
+//   test[4] = 4;
+//   test[133] = 4;
+//   test[145] = 4;
+//   test[153] = 4;
+//   test[14] = 4;
+//   test[142] = 4;
+//   test[141] = 4;
+//   test[143] = 4;
+//   test[144] = 4;
+//   // test.insert_test(5, 2);
+// 	// test.insert_test(122, 4);
+// 	// test.insert_test(99, 0);
+//   // test.insert_test(3, 0);
+// 	// test.insert_test(102, 0);
+//   // test.insert_test(-4, 0);
+//   // test.insert_test(-7, 0);
+// 	// test.insert_test(135, 0);
+// 	// test.insert_test(104, 0);
+// 	// test.insert_test(101, 0);
+// 	// test.insert_test(148, 0);
+// 	// test.insert_test(123, 0);
+// 	// test.insert_test(702, 0);
+// 	// test.insert_test(12, 0);
 
-  std::cout << test.count(5) << std::endl;
-  ft::Map<int, int>::iterator my_it = test.begin();
+//   // test.erase(test.begin());
+//   // test.erase(test.begin(), test.end());
 
- for (; my_it != test.end(); my_it++) {
-    std::cout << my_it->first << "\n";
-  }
+//   ft::Map<int, int>::iterator my_it = test.begin();
+//   int i = 0;
 
-  std::cout << (my_it == --test.begin()) << std::endl;
+//  for (; my_it != test.end(); my_it++) {
+//   //  my_it.debug();
+//     std::cout << my_it->first << "\n";
+//     i++;
+//     if (i == 20)
+//       break;
+//   }
 
+  
 
   // test["hava"] = 25;
 
