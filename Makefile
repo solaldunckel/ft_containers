@@ -6,15 +6,15 @@
 #    By: sdunckel <sdunckel@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/12/06 18:09:59 by sdunckel          #+#    #+#              #
-#    Updated: 2020/09/11 06:10:21 by sdunckel         ###   ########.fr        #
+#    Updated: 2020/09/15 17:44:01 by sdunckel         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME			= ft_containers
 
 LIST			= list
-STACK			= #stack
-QUEUE			= #queue
+STACK			= stack
+QUEUE			= queue
 VECTOR		= vector
 MAP				= map
 ALL				= $(LIST) $(STACK) $(QUEUE) $(VECTOR) $(MAP)
@@ -31,7 +31,7 @@ $(LIST):	compile
 $(STACK):	compile
 					@${CC} ${CFLAGS} -o $@ tests/$@.cpp && ./$@
 
-$(QUEUE):	
+$(QUEUE): compile
 					@${CC} ${CFLAGS} -o $@ tests/$@.cpp && ./$@
 
 $(VECTOR): compile
@@ -40,7 +40,7 @@ $(VECTOR): compile
 $(MAP):		compile
 					@${CC} ${CFLAGS} -o $@ tests/$@.cpp && ./$@
 
-compile:	
+compile:
 
 clean:
 					${RM} $(ALL)

@@ -2,13 +2,13 @@
 
 void vector_constructors() {
   std::vector<int> real;
-  ft::Vector<int> mine;
+  ft::vector<int> mine;
 
 }
 
 void vector_reserve() {
   std::vector<int> real;
-  ft::Vector<int> mine;
+  ft::vector<int> mine;
 
   TEST(real.capacity(), mine.capacity());
 
@@ -30,7 +30,7 @@ void vector_reserve() {
 
 void vector_push_back() {
   std::vector<int> real;
-  ft::Vector<int> mine;
+  ft::vector<int> mine;
 
   PUSH_BACK(real, mine, 23);
   TEST(real.capacity(), mine.capacity());
@@ -77,8 +77,8 @@ void vector_push_back() {
   int myint[] = {0, 1, 2, 3, 4};
   std::vector<int> three(myint, myint + 3); // three ints with a value of 100
   std::vector<int> four(myint, myint + 4);  // two ints with a value of 200
-  ft::Vector<int> three1(myint, myint + 3); // three ints with a value of 100
-  ft::Vector<int> four1(myint, myint + 4);  // two ints with a value of 200
+  ft::vector<int> three1(myint, myint + 3); // three ints with a value of 100
+  ft::vector<int> four1(myint, myint + 4);  // two ints with a value of 200
 
   // EXPECT_FALSE(foo == bar);
   // EXPECT_TRUE(foo != bar);

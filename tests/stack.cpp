@@ -2,15 +2,15 @@
 
 void stack_constructors() {
   std::stack<int> real;
-  ft::Stack<int> mine;
+  ft::stack<int> mine;
 
   std::stack<std::string> real2;
-  ft::Stack<std::string> mine2;
+  ft::stack<std::string> mine2;
 }
 
 void stack_empty() {
   std::stack<int> real;
-  ft::Stack<int> mine;
+  ft::stack<int> mine;
 
   TEST(real.empty(), mine.empty());
 
@@ -20,7 +20,7 @@ void stack_empty() {
 
 void stack_size() {
   std::stack<int> real;
-  ft::Stack<int> mine;
+  ft::stack<int> mine;
 
   PUSH(real, mine, 15);
   TEST(real.size(), mine.size());
@@ -32,7 +32,7 @@ void stack_size() {
 
 void stack_top() {
   std::stack<int> real;
-  ft::Stack<int> mine;
+  ft::stack<int> mine;
 
   PUSH(real, mine, 15);
   TEST(real.top(), mine.top());
@@ -43,7 +43,7 @@ void stack_top() {
 
 void stack_pop() {
   std::stack<int> real;
-  ft::Stack<int> mine;
+  ft::stack<int> mine;
 
   PUSH(real, mine, 15);
   POP(real, mine);
@@ -51,19 +51,11 @@ void stack_pop() {
 }
 
 void stack_operators() {
-  std::stack<int> real1;
-  std::stack<int> real2;
 
-  ft::Stack<int> mine1;
-  ft::Stack<int> mine2;
-
-  // PUSH(real1, real2, 15);
-  // PUSH(mine1, mine2, 15);
-  // TEST(real1 < real2, mine1 < mine2);
 }
 
 int main() {
-  std::cout << "Stack " << std::endl;
+  std::cout << "stack " << std::endl;
 
   FCT_TEST("constructors");
   stack_constructors();

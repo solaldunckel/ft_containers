@@ -11,6 +11,17 @@ namespace ft {
     bool operator() (const T &lhs, const T &rhs) const { return lhs < rhs; };
   };
 
+  template <class Compare, class T>
+  class comp {
+   public:
+    comp(Compare c) : comp_(c) {};
+
+    bool operator()(const T& x, const T& y) const { return comp_(x.first, y.first); };
+
+   protected:
+    Compare comp_;
+  };
+
   template <class T1, class T2>
   struct pair {
     typedef T1   first_type;
@@ -66,8 +77,8 @@ namespace ft {
   };
 
   template <class T1, class T2>
-  pair<T1, T2> make_pair(T1 t, T2 u) {
-    return pair<T1, T2>(t, u);
+  ft::pair<T1, T2> make_pair(T1 t, T2 u) {
+    return ft::pair<T1, T2>(t, u);
   };
 };
 

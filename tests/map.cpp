@@ -3,7 +3,7 @@
 int main() {
   std::cout << "Map " << std::endl;
 
-//   ft::Map<int, int> test;
+//   ft::map<int, int> test;
 
 //   // ft::pair<int, int> p1 = ft::make_pair("solal", 24);
 
@@ -42,7 +42,7 @@ int main() {
 //   // test.erase(test.begin());
 //   // test.erase(test.begin(), test.end());
 
-//   ft::Map<int, int>::iterator my_it = test.begin();
+//   ft::map<int, int>::iterator my_it = test.begin();
 //   int i = 0;
 
 //  for (; my_it != test.end(); my_it++) {
@@ -62,7 +62,7 @@ int main() {
 
   // std::cout << test.size() << std::endl;
 
-  // ft::Map<std::string, int>::iterator it = test.begin();
+  // ft::map<std::string, int>::iterator it = test.begin();
 
   // std::cout << it->first << std::endl;
   
@@ -79,8 +79,8 @@ int main() {
   // test[702] = 18;
   // test[12] = 18;
 
-  // ft::Map<int, int> test3;
-  // ft::Map<int, int>::iterator it3 = test3.begin();
+  // ft::map<int, int> test3;
+  // ft::map<int, int>::iterator it3 = test3.begin();
 
   // std::cout << it3->first << std::endl;
   // std::cout << "equal to end : " << (it3 == test3.end()) << std::endl;

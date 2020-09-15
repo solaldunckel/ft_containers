@@ -2,20 +2,21 @@
 # define TESTS_H
 
 # include <iostream>
-# include <stack>
 # include <list>
+# include <stack>
+# include <queue>
 # include <vector>
 # include <map>
 # include <stdio.h>
 
-# include "../Iterators.hpp"
-# include "../Utility.hpp"
+# include "../iterators.hpp"
+# include "../utility.hpp"
 
-# include "../List.hpp"
-# include "../Stack.hpp"
-# include "../Queue.hpp"
-# include "../Vector.hpp"
-# include "../Map.hpp"
+# include "../list.hpp"
+# include "../stack.hpp"
+# include "../queue.hpp"
+# include "../vector.hpp"
+# include "../map.hpp"
 
 # define FCT_TEST(str) (printf("\n%-4s%-15s%-4s", ">", str, ":"))
 
