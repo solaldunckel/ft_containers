@@ -2,34 +2,34 @@
 
 void list_constructors() {
   std::list<int> real;
-  ft::list<int> mine;
+  ft::List<int> mine;
   ITERATE(real, mine);
 
   std::list<int> real6(5);
-  ft::list<int> mine6(5);
+  ft::List<int> mine6(5);
 
   std::list<int> real5(4, 100);
-  ft::list<int> mine5(4, 100);
+  ft::List<int> mine5(4, 100);
   ITERATE(real5, mine5);
 
   std::list<std::string> real2(12, "test");
-  ft::list<std::string> mine2(12, "test");
+  ft::List<std::string> mine2(12, "test");
   ITERATE(real2, mine2);
 
   std::list<int> ww(55, 68);
   std::list<int> real3(ww.begin(), ww.end());
-  ft::list<int> mine3(ww.begin(), ww.end());
+  ft::List<int> mine3(ww.begin(), ww.end());
   ITERATE(real3, mine3);
 
   std::list<std::string> ww2(55, "test");
   std::list<std::string> real4(ww2.begin(), ww2.end());
-  ft::list<std::string> mine4(ww2.begin(), ww2.end());
+  ft::List<std::string> mine4(ww2.begin(), ww2.end());
   ITERATE(real4, mine4);
 }
 
 void list_push_front() {
   std::list<std::string> real;
-  ft::list<std::string> mine;
+  ft::List<std::string> mine;
 
   PUSH_FRONT(real, mine, "test");
   TEST(real.front(), mine.front());
@@ -45,7 +45,7 @@ void list_push_front() {
 
 void list_push_back() {
   std::list<std::string> real;
-  ft::list<std::string> mine;
+  ft::List<std::string> mine;
 
   PUSH_BACK(real, mine, "test");
   TEST(real.front(), mine.front());
@@ -61,7 +61,7 @@ void list_push_back() {
 
 void list_size() {
   std::list<int> real;
-  ft::list<int> mine;
+  ft::List<int> mine;
 
   TEST(real.size(), mine.size());
   PUSH_BACK(real, mine, 12);
@@ -80,7 +80,7 @@ void list_size() {
 
 void list_empty() {
   std::list<int> real;
-  ft::list<int> mine;
+  ft::List<int> mine;
 
   TEST(real.empty(), mine.empty());
   PUSH_BACK(real, mine, 12);
@@ -97,24 +97,28 @@ void list_empty() {
 
 void list_max_size() {
   std::list<int> real;
-  ft::list<int> mine;
+  ft::List<int> mine;
 
   TEST(real.max_size(), mine.max_size());
 
   std::list<std::string> real2;
-  ft::list<std::string> mine2;
+  ft::List<std::string> mine2;
   TEST(real2.max_size(), mine2.max_size());
 
   std::list<std::list<int> > real3;
-  ft::list<std::list<int> > mine3;
+  ft::List<std::list<int> > mine3;
   TEST(real3.max_size(), mine3.max_size());
+
+  std::list<char> real4;
+  ft::List<char> mine4;
+  TEST(real4.max_size(), mine4.max_size());
 }
 
 void list_erase() {
   std::list<int> real;
-  ft::list<int> mine;
+  ft::List<int> mine;
   std::list<int>::iterator real_it;
-  ft::list<int>::iterator my_it;
+  ft::List<int>::iterator my_it;
 
   PUSH_BACK(real, mine, 5);
   PUSH_BACK(real, mine, 3);
@@ -145,7 +149,7 @@ bool less_than(int &a, int &b) {
 
 void list_sort() {
   std::list<int> real;
-  ft::list<int> mine;
+  ft::List<int> mine;
 
   PUSH_BACK(real, mine, 36);
 
@@ -191,7 +195,7 @@ void list_sort() {
   ITERATE(real, mine);
 
   std::list<std::string> real2;
-  ft::list<std::string> mine2;
+  ft::List<std::string> mine2;
   PUSH_BACK(real2, mine2, "test");
   PUSH_BACK(real2, mine2, "Test");
   PUSH_BACK(real2, mine2, "LOL");
@@ -205,7 +209,7 @@ void list_sort() {
 
 void list_remove() {
   std::list<int> real;
-  ft::list<int> mine;
+  ft::List<int> mine;
 
   PUSH_BACK(real, mine, 5);
   real.remove(3);
@@ -244,7 +248,7 @@ void list_remove() {
 
 void list_unique() {
   std::list<int> real;
-  ft::list<int> mine;
+  ft::List<int> mine;
 
   PUSH_BACK(real, mine, 5);
   PUSH_BACK(real, mine, 5);
@@ -284,7 +288,7 @@ void list_unique() {
 
 void list_splice() {
   std::list<int> real;
-  ft::list<int> mine;
+  ft::List<int> mine;
 
   PUSH_BACK(real, mine, 2);
   PUSH_BACK(real, mine, 4);
@@ -293,7 +297,7 @@ void list_splice() {
   PUSH_BACK(real, mine, 32);
 
   std::list<int> real_sp(real.begin(), real.end());
-  ft::list<int> mine_sp(mine.begin(), mine.end());
+  ft::List<int> mine_sp(mine.begin(), mine.end());
 
   real.splice(--real.end(), real_sp);
   mine.splice(--mine.end(), mine_sp);
@@ -306,7 +310,7 @@ void list_splice() {
 
 void list_reverse() {
   std::list<int> real;
-  ft::list<int> mine;
+  ft::List<int> mine;
 
   int i = 0;
 
@@ -336,8 +340,8 @@ void list_reverse() {
 void list_merge() {
   std::list<int> real;
   std::list<int> real2;
-  ft::list<int> mine;
-  ft::list<int> mine2;
+  ft::List<int> mine;
+  ft::List<int> mine2;
 
   real.push_back(3);
   real.push_back(5);
@@ -379,11 +383,59 @@ void list_merge() {
   ITERATE(real, mine);
 }
 
+void list_swap() {
+  std::list<int> real;
+  std::list<int> real2;
+  ft::List<int> mine;
+  ft::List<int> mine2;
+
+  real.push_back(3);
+  real.push_back(5);
+  real.push_back(8);
+  real.push_back(12);
+
+  real2.push_back(7);
+  real2.push_back(4);
+  real2.push_back(7);
+  real2.push_back(13);
+
+  mine.push_back(3);
+  mine.push_back(5);
+  mine.push_back(8);
+  mine.push_back(12);
+
+  mine2.push_back(7);
+  mine2.push_back(4);
+  mine2.push_back(7);
+  mine2.push_back(13);
+
+  real.swap(real2);
+  mine.swap(mine2);
+
+  ITERATE(real, mine);
+  ITERATE(real2, mine2);
+
+  real.clear();
+  mine.clear();
+
+  real.push_back(2);
+  real2.push_back(3);
+
+  mine.push_back(2);
+  mine2.push_back(3);
+
+  swap(real, real2);
+  swap(mine, mine2);
+
+  ITERATE(real, mine);
+  ITERATE(real2, mine2);
+}
+
 void list_iterators() {
   std::list<int> real;
-  ft::list<int> mine;
+  ft::List<int> mine;
   std::list<int>::iterator it_real;
-  ft::list<int>::iterator it_mine;
+  ft::List<int>::iterator it_mine;
 
   TEST(*real.begin(), *mine.begin());
   PUSH_BACK(real, mine, 7);
@@ -401,7 +453,7 @@ void list_iterators() {
   TEST(*it_real, *it_mine);
 
   std::list<int> real_sp(real.begin(), real.end());
-  ft::list<int> mine_sp(mine.begin(), mine.end());
+  ft::List<int> mine_sp(mine.begin(), mine.end());
 
   it_real = real_sp.begin();
   it_mine = mine.begin();
@@ -412,15 +464,15 @@ void list_iterators() {
   TEST(*it_real, *it_mine);
 
   std::list<int>::const_iterator cit_real = real.begin();
-  ft::list<int>::const_iterator cit_mine = mine.begin();
+  ft::List<int>::const_iterator cit_mine = mine.begin();
   TEST(*(++cit_real), *(++cit_mine));
 }
 
 void list_operators() {
   std::list<int> real;
   std::list<int> real2;
-  ft::list<int> mine;
-  ft::list<int> mine2;
+  ft::List<int> mine;
+  ft::List<int> mine2;
 
   PUSH_BACK(real, real2, 15);
   PUSH_BACK(mine, mine2, 15);
@@ -437,6 +489,10 @@ void list_operators() {
   TEST(real <= real2, mine <= mine2);
   TEST(real >= real2, mine >= mine2);
   TEST(real != real2, mine != mine2);
+
+  real = real2;
+  mine = mine2;
+  ITERATE(real, mine);
 }
 
 int main() {
@@ -480,6 +536,9 @@ int main() {
 
   FCT_TEST("merge");
   list_merge();
+
+  FCT_TEST("swap");
+  list_swap();
 
   FCT_TEST("iterators");
   list_iterators();

@@ -9,14 +9,14 @@
 # include <map>
 # include <stdio.h>
 
-# include "../iterators.hpp"
-# include "../utility.hpp"
+# include "../Iterators.hpp"
+# include "../Utility.hpp"
 
-# include "../list.hpp"
-# include "../stack.hpp"
-# include "../queue.hpp"
-# include "../vector.hpp"
-# include "../map.hpp"
+# include "../List.hpp"
+# include "../Stack.hpp"
+# include "../Queue.hpp"
+# include "../Vector.hpp"
+# include "../Map.hpp"
 
 # define FCT_TEST(str) (printf("\n%-4s%-15s%-4s", ">", str, ":"))
 
@@ -25,6 +25,7 @@
 # define PUSH_BACK(l, r, x)   (l.push_back(x), r.push_back(x))
 
 # define POP(l, r) (l.pop(), r.pop())
+# define POP_BACK(l, r)   (l.pop_back(), r.pop_back())
 
 # define RESET   "\033[0m"
 # define RED     "\033[31m"
@@ -68,6 +69,22 @@ void ITERATE(list1 &real, list2 &mine) {
 
   while (it1 != real.end()) {
     if (*it1 != *it2) {
+      KO;
+      return ;
+    }
+    it1++;
+    it2++;
+  }
+  OK;
+}
+
+template <class map, class map2>
+void ITERATE_MAP(map &real, map2 &mine) {
+  typename map::iterator it1 = real.begin();
+  typename map2::iterator it2 = mine.begin();
+
+  while (it1 != real.end()) {
+    if (it1->first != it2->first) {
       KO;
       return ;
     }

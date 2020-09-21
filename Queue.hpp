@@ -1,31 +1,30 @@
 #ifndef QUEUE_HPP
 # define QUEUE_HPP
 
-# include "list.hpp"
+# include "List.hpp"
 
 namespace ft {
-  template <class T, class Container = ft::list<T> >
-  class queue {
+  template <class T, class Container = ft::List<T> >
+  class Queue {
    public:
     typedef T         value_type;
     typedef Container container_type;
     typedef size_t    size_type;
 
-    explicit queue(const container_type& ctnr = container_type()) {
+    explicit Queue(const container_type& ctnr = container_type()) {
       c_ = ctnr;
     };
 
-    queue(const queue& other) {
+    Queue(const Queue& other) {
       c_ = other.c_;
-      return *this;
     }
 
-    queue& operator = (const queue& other) {
+    Queue& operator = (const Queue& other) {
       c_ = other.c_;
       return *this;
     };
 
-    ~queue() {};
+    ~Queue() {};
 
     bool              empty() const               { return c_.empty(); };
     size_type         size() const                { return c_.size(); };
@@ -37,37 +36,43 @@ namespace ft {
     void              pop()                       { c_.pop_front(); };
 
     template <class T1, class C1>
-    friend bool operator== (const queue<T1,C1>& lhs, const queue<T1,C1>& rhs) {
-      return lhs.c_ == rhs.c_;
-    };
+    friend bool operator== (const Queue<T1, C1>& lhs, const Queue<T1, C1>& rhs);
 
     template <class T1, class C1>
-    friend bool operator< (const queue<T1,C1>& lhs, const queue<T1,C1>& rhs) {
-      return lhs.c_ < rhs.c_;
-    };
-
-    template <class T1, class C1>
-    friend bool operator!= (const queue<T1,C1>& lhs, const queue<T1,C1>& rhs) {
-      return !(lhs == rhs);
-    };
-
-    template <class T1, class C1>
-    friend bool operator<= (const queue<T1,C1>& lhs, const queue<T1,C1>& rhs) {
-      return !(rhs < lhs);
-    };
-
-    template <class T1, class C1>
-    friend bool operator>  (const queue<T1,C1>& lhs, const queue<T1,C1>& rhs) {
-      return rhs < lhs;
-    };
-
-    template <class T1, class C1>
-    friend bool operator>= (const queue<T1,C1>& lhs, const queue<T1,C1>& rhs) {
-      return !(lhs < rhs);
-    };
+    friend bool operator< (const Queue<T1, C1>& lhs, const Queue<T1, C1>& rhs);
 
    protected:
     container_type c_;
+  };
+
+  template <class T, class Ctnr>
+  bool operator== (const Queue<T, Ctnr>& lhs, const Queue<T, Ctnr>& rhs) {
+    return lhs.c_ == rhs.c_;
+  };
+
+  template <class T, class Ctnr>
+  bool operator< (const Queue<T, Ctnr>& lhs, const Queue<T, Ctnr>& rhs) {
+    return lhs.c_ < rhs.c_;
+  };
+
+  template <class T, class Ctnr>
+  bool operator!= (const Queue<T, Ctnr>& lhs, const Queue<T, Ctnr>& rhs) {
+    return !(lhs == rhs);
+  };
+
+  template <class T, class Ctnr>
+  bool operator<= (const Queue<T, Ctnr>& lhs, const Queue<T, Ctnr>& rhs) {
+    return !(rhs < lhs);
+  };
+
+  template <class T, class Ctnr>
+  bool operator>  (const Queue<T, Ctnr>& lhs, const Queue<T, Ctnr>& rhs) {
+    return rhs < lhs;
+  };
+
+  template <class T, class Ctnr>
+  bool operator>= (const Queue<T, Ctnr>& lhs, const Queue<T, Ctnr>& rhs) {
+    return !(lhs < rhs);
   };
 };
 

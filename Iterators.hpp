@@ -43,7 +43,7 @@ namespace ft {
   };
 
   template <typename Iterator>
-  class reverse_iterator {
+  class reverse_iterator : public Iterator {
    public:
     typedef reverse_iterator    self;
     typedef Iterator            iterator_type;
@@ -63,10 +63,16 @@ namespace ft {
 
     virtual ~reverse_iterator() {};
 
-    self &operator=(self const &other) {
-      this->it_ = other.it_;
-      return (*this);
-    }
+    template <class It>
+		self &operator=(const reverse_iterator<It>& other) {
+			this->it_ = other.it_;
+			return *this;
+		}
+
+    // self &operator=(self const &other) {
+    //   this->it_ = other.it_;
+    //   return (*this);
+    // }
 
     self     operator ++ () {
       --it_;
@@ -87,14 +93,18 @@ namespace ft {
       return tmp;
     };
     self     operator + (difference_type n) const {
-      return reverse_iterator(it_ - n);
+      reverse_iterator tmp(*this);
+      tmp.it_ -= n;
+      return tmp;
     };
     self     operator += (difference_type n) {
       it_ = it_ - n;
       return *this;
     };
     self     operator - (difference_type n) const {
-      return reverse_iterator(it_ + n);
+      reverse_iterator tmp(*this);
+      tmp.it_ += n;
+      return tmp;
     };
     self     operator -= (difference_type n) {
       it_ = it_ + n;
@@ -114,37 +124,37 @@ namespace ft {
     };
 
     template<typename It>
-    friend bool operator==(const reverse_iterator &x,
+    friend bool operator==(const reverse_iterator<It> &x,
                             const reverse_iterator<It> &y) {
       return x.it_ == y.it_;
     }
 
     template<typename It>
-    friend bool operator!=(const reverse_iterator &x,
+    friend bool operator!=(const reverse_iterator<It> &x,
                             const reverse_iterator<It> &y) {
       return !(x == y);
     }
 
     template<typename It>
-    friend bool operator<(const reverse_iterator &x,
+    friend bool operator<(const reverse_iterator<It> &x,
                             const reverse_iterator<It> &y) {
-      return x.it_ < y.it_;
+      return x.it_ > y.it_;
     }
 
     template<typename It>
-    friend bool operator>(const reverse_iterator &x,
+    friend bool operator>(const reverse_iterator<It> &x,
                             const reverse_iterator<It> &y) {
       return y < x;
     }
 
     template<typename It>
-    friend bool operator<=(const reverse_iterator &x,
+    friend bool operator<=(const reverse_iterator<It> &x,
                             const reverse_iterator<It> &y) {
       return !(x < y);
     }
 
     template<typename It>
-    friend bool operator>=(const reverse_iterator &x,
+    friend bool operator>=(const reverse_iterator<It> &x,
                             const reverse_iterator<It> &y) {
       return !(x > y);
     }

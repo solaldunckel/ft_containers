@@ -5,7 +5,7 @@
 # include <limits>
 # include <type_traits>
 
-# include "iterators.hpp"
+# include "Iterators.hpp"
 
 namespace ft {
   template <class T>
@@ -14,7 +14,7 @@ namespace ft {
     Node  *next_;
     T     value_;
 
-    Node() : prev_(this), next_(this), value_(T()) {};
+    Node() : prev_(this), next_(this) {};
     Node(Node *prev, Node *next, const T &val) : prev_(prev), next_(next), value_(val) {};
   };
 
@@ -70,7 +70,7 @@ namespace ft {
   };
 
   template <class T, class Alloc = std::allocator<T> >
-  class list {
+  class List {
    public:
     typedef T           value_type;
     typedef size_t      size_type;
@@ -88,13 +88,13 @@ namespace ft {
 
     typedef typename iterator::difference_type     difference_type;
 
-    explicit list(const allocator_type& alloc = allocator_type()) {
+    explicit List(const allocator_type& alloc = allocator_type()) {
       elem_ = new node();
       alloc_ = alloc;
       size_ = 0;
     };
 
-    explicit list(size_type n, const value_type& val = value_type(), const allocator_type& alloc = allocator_type()) {
+    explicit List(size_type n, const value_type& val = value_type(), const allocator_type& alloc = allocator_type()) {
       elem_ = new node();
       alloc_ = alloc;
       size_ = 0;
@@ -102,7 +102,7 @@ namespace ft {
     };
 
     template <class InputIterator>
-    list(InputIterator first, InputIterator last, const allocator_type& alloc = allocator_type(),
+    List(InputIterator first, InputIterator last, const allocator_type& alloc = allocator_type(),
           typename std::enable_if<!std::is_integral<InputIterator>::value>::type * = 0) {
       elem_ = new node();
       alloc_ = alloc;
@@ -110,19 +110,19 @@ namespace ft {
       insert(end(), first, last);
     };
 
-    list(list &x) {
+    List(List &x) {
       elem_ = new node();
       alloc_ = x.alloc_;
       size_ = 0;
       assign(x.begin(), x.end());
     };
 
-    ~list() {
+    ~List() {
       clear();
       delete elem_;
     };
 
-    list& operator = (const list& x) {
+    List& operator = (const List& x) {
       assign(x.begin(), x.end());
       return *this;
     };
@@ -201,13 +201,12 @@ namespace ft {
 
     iterator erase (iterator first, iterator last) {
       while (first != last) {
-        erase(first);
-        first++;
+        first = erase(first);
       }
       return last;
     };
 
-    void swap (list& x) {
+    void swap (List& x) {
       node *tmp;
       size_type size_tmp;
 
@@ -233,11 +232,11 @@ namespace ft {
       erase(begin(), end());
     };
 
-    void splice (iterator position, list& x) {
+    void splice (iterator position, List& x) {
       splice(position, x, x.begin(), x.end());
     }
 
-    void splice (iterator position, list& x, iterator i) {
+    void splice (iterator position, List& x, iterator i) {
       node *old = i.ptr_;
       node *frsh = position.ptr_;
 
@@ -254,7 +253,7 @@ namespace ft {
       x.size_--;
     }
 
-    void splice (iterator position, list& x, iterator first, iterator last) {
+    void splice (iterator position, List& x, iterator first, iterator last) {
       while (first != last) {
         insert(position, *first);
         first = x.erase(first);
@@ -311,7 +310,7 @@ namespace ft {
       }
     };
 
-    void merge(list& x) {
+    void merge(List& x) {
       if (&x == this)
         return ;
       iterator it1 = begin();
@@ -329,7 +328,7 @@ namespace ft {
     }
 
     template <class Compare>
-    void merge(list& x, Compare comp) {
+    void merge(List& x, Compare comp) {
       iterator it1 = begin();
       iterator it2 = x.begin();
 
@@ -408,11 +407,11 @@ namespace ft {
   };
 
   template <class T>
-  bool operator== (const list<T>& lhs, const list<T>& rhs) {
+  bool operator== (const List<T>& lhs, const List<T>& rhs) {
     if (lhs.size() != rhs.size())
       return false;
-    typename list<T>::const_iterator it1 = lhs.begin();
-    typename list<T>::const_iterator it2 = rhs.begin();
+    typename List<T>::const_iterator it1 = lhs.begin();
+    typename List<T>::const_iterator it2 = rhs.begin();
 
     while (it1 != lhs.end() && it2 != rhs.end()) {
       if (*it1 != *it2)
@@ -424,12 +423,12 @@ namespace ft {
   };
 
   template <class T>
-  bool operator!= (const list<T>& lhs, const list<T>& rhs) { return !(lhs == rhs); };
+  bool operator!= (const List<T>& lhs, const List<T>& rhs) { return !(lhs == rhs); };
 
   template <class T>
-  bool operator<  (const list<T>& lhs, const list<T>& rhs) {
-    typename list<T>::const_iterator it1 = lhs.begin();
-    typename list<T>::const_iterator it2 = rhs.begin();
+  bool operator<  (const List<T>& lhs, const List<T>& rhs) {
+    typename List<T>::const_iterator it1 = lhs.begin();
+    typename List<T>::const_iterator it2 = rhs.begin();
 
     while (it1 != lhs.end() && it2 != rhs.end()) {
       if (*it1 < *it2)
@@ -443,16 +442,16 @@ namespace ft {
   };
 
   template <class T>
-  bool operator<= (const list<T>& lhs, const list<T>& rhs) { return !(rhs < lhs); };
+  bool operator<= (const List<T>& lhs, const List<T>& rhs) { return !(rhs < lhs); };
 
   template <class T>
-  bool operator>  (const list<T>& lhs, const list<T>& rhs) { return rhs < lhs; };
+  bool operator>  (const List<T>& lhs, const List<T>& rhs) { return rhs < lhs; };
 
   template <class T>
-  bool operator>= (const list<T>& lhs, const list<T>& rhs) { return !(lhs < rhs); };
+  bool operator>= (const List<T>& lhs, const List<T>& rhs) { return !(lhs < rhs); };
 
   template <class T>
-  void swap (list<T>& x, list<T>& y) { x.swap(y); };
+  void swap (List<T>& x, List<T>& y) { x.swap(y); };
 }
 
 #endif
