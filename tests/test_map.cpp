@@ -2,7 +2,7 @@
 
 void map_constructors() {
   std::map<char, int> real;
-  ft::Map<char, int> mine;
+  ft::map<char, int> mine;
 
   real['a'] = 10;
   real['b'] = 30;
@@ -15,10 +15,10 @@ void map_constructors() {
   mine['d'] = 70;
 
   std::map<char, int> real2(real.begin(), real.end());
-  ft::Map<char, int> mine2(mine.begin(), mine.end());
+  ft::map<char, int> mine2(mine.begin(), mine.end());
 
   std::map<char, int> real3(real2);
-  ft::Map<char, int> mine3(mine2);
+  ft::map<char, int> mine3(mine2);
 
   TEST(real.size(), mine.size());
   TEST(real2.size(), mine2.size());
@@ -27,7 +27,7 @@ void map_constructors() {
 
 void map_capacity() {
   std::map<char, int> real;
-  ft::Map<char, int> mine;
+  ft::map<char, int> mine;
 
   TEST(real.empty(), mine.empty());
   real['a'] = 10;
@@ -44,16 +44,16 @@ void map_capacity() {
   TEST(real.max_size(), mine.max_size());
 
   std::map<std::string, int> real2;
-  ft::Map<std::string, int> mine2;
+  ft::map<std::string, int> mine2;
   TEST(real2.max_size(), mine2.max_size());
   std::map<std::string, size_t> real3;
-  ft::Map<std::string, size_t> mine3;
+  ft::map<std::string, size_t> mine3;
   TEST(real3.max_size(), mine3.max_size());
 }
 
 void map_access() {
   std::map<char, int> real;
-  ft::Map<char, int> mine;
+  ft::map<char, int> mine;
 
   real['a'] = 10;
   real['b'] = 30;
@@ -76,8 +76,8 @@ void map_access() {
 void map_modifiers() {
   std::map<char, int> real;
   std::map<char, int> real2;
-  ft::Map<char, int> mine;
-  ft::Map<char, int> mine2;
+  ft::map<char, int> mine;
+  ft::map<char, int> mine2;
 
   real.insert(std::pair<char, int>('a', 100));
   mine.insert(ft::pair<char, int>('a', 100));
@@ -87,14 +87,14 @@ void map_modifiers() {
   std::pair<std::map<char, int>::iterator, bool> ret;
   ret = real.insert(std::pair<char, int>('z', 500));
 
-  ft::pair<ft::Map<char, int>::iterator, bool> ret2;
+  ft::pair<ft::map<char, int>::iterator, bool> ret2;
   ret2 = mine.insert(ft::pair<char, int>('z', 500));
 
   std::map<char, int>::iterator it = real.begin();
   real.insert(it, std::pair<char, int>('b', 300));
   real.insert(it, std::pair<char, int>('c', 400));
 
-  ft::Map<char, int>::iterator it2 = mine.begin();
+  ft::map<char, int>::iterator it2 = mine.begin();
   mine.insert(it2, ft::pair<char, int>('b', 300));
   mine.insert(it2, ft::pair<char, int>('c', 400));
 

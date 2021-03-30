@@ -1,19 +1,19 @@
 #include "tests.h"
 
 void stack_constructors() {
-  ft::Stack<int> mine;
+  ft::stack<int> mine;
 
   mine.push(12);
   mine.push(24);
 
-  ft::Stack<int> mine2(mine);
+  ft::stack<int> mine2(mine);
 
   TEST(mine2.size(), size_t(2));
   TEST(mine2.top(), 24);
 }
 
 void stack_empty() {
-  ft::Stack<int> mine;
+  ft::stack<int> mine;
 
   TEST(mine.empty(), true);
 
@@ -22,7 +22,7 @@ void stack_empty() {
 }
 
 void stack_size() {
-  ft::Stack<int> mine;
+  ft::stack<int> mine;
 
   mine.push(15);
   TEST(mine.size(), size_t(1));
@@ -35,7 +35,7 @@ void stack_size() {
 }
 
 void stack_top() {
-  ft::Stack<int> mine;
+  ft::stack<int> mine;
 
   mine.push(15);
   TEST(mine.top(), 15);
@@ -46,7 +46,7 @@ void stack_top() {
 }
 
 void stack_pop() {
-  ft::Stack<int> mine;
+  ft::stack<int> mine;
 
   mine.push(15);
   mine.push(24);
@@ -60,8 +60,8 @@ void stack_operators() {
   std::stack<int> real;
   std::stack<int> real2;
 
-  ft::Stack<int> mine;
-  ft::Stack<int> mine2;
+  ft::stack<int> mine;
+  ft::stack<int> mine2;
 
   PUSH(real, real2, 12);
   PUSH(real, real2, 24);

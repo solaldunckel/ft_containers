@@ -111,7 +111,7 @@ namespace ft {
 
   template <class Key, class T, class Compare = ft::less<Key>,
               class Alloc = std::allocator<ft::pair<const Key, T> > >
-  class Map {
+  class map {
    public:
 
     typedef Key                                     key_type;
@@ -134,7 +134,7 @@ namespace ft {
     typedef std::ptrdiff_t                  difference_type;
     typedef size_t                          size_type;
 
-    explicit Map(const key_compare& comp = key_compare(),
+    explicit map(const key_compare& comp = key_compare(),
                   const allocator_type& alloc = allocator_type()) {
       container_ = new tree();
       alloc_ = alloc;
@@ -143,7 +143,7 @@ namespace ft {
     }
 
     template <class InputIterator>
-    Map(InputIterator first, InputIterator last,
+    map(InputIterator first, InputIterator last,
           const key_compare& comp = key_compare(),
             const allocator_type& alloc = allocator_type()) {
       container_ = new tree();
@@ -153,7 +153,7 @@ namespace ft {
       insert(first, last);
     };
 
-    Map(const Map& x) {
+    map(const map& x) {
       container_ = new tree();
       alloc_ = x.alloc_;
       comp_ = x.comp_;
@@ -161,12 +161,12 @@ namespace ft {
       insert(x.begin(), x.end());
     };
 
-    ~Map() {
+    ~map() {
       clear();
       delete container_;
     };
 
-    Map& operator= (const Map& x) {
+    map& operator= (const map& x) {
       clear();
       insert(x.begin(), x.end());
       return *this;
@@ -211,7 +211,7 @@ namespace ft {
 
     template <class InputIterator>
     void insert (InputIterator first, InputIterator last,
-                typename std::enable_if<!std::is_integral<InputIterator>::value>::type * = 0) {
+                typename ft::enable_if<!ft::is_integral<InputIterator>::value>::type * = 0) {
       while (first != last) {
         insert(*first);
         first++;
@@ -278,7 +278,7 @@ namespace ft {
       }
     };
 
-    void swap (Map& x) {
+    void swap (map& x) {
       tree *tmp;
       size_type size_tmp;
 
@@ -454,11 +454,11 @@ namespace ft {
   };
 
   template <class Key, class T>
-  bool operator== (const Map<Key, T>& lhs, const Map<Key, T>& rhs) {
+  bool operator== (const map<Key, T>& lhs, const map<Key, T>& rhs) {
     if (lhs.size() != rhs.size())
       return false;
-    typename Map<Key, T>::const_iterator it1 = lhs.begin();
-    typename Map<Key, T>::const_iterator it2 = rhs.begin();
+    typename map<Key, T>::const_iterator it1 = lhs.begin();
+    typename map<Key, T>::const_iterator it2 = rhs.begin();
 
     while (it1 != lhs.end() && it2 != rhs.end()) {
       if (*it1 != *it2)
@@ -470,12 +470,12 @@ namespace ft {
   };
 
   template <class Key, class T>
-  bool operator!= (const Map<Key, T>& lhs, const Map<Key, T>& rhs) { return !(lhs == rhs); };
+  bool operator!= (const map<Key, T>& lhs, const map<Key, T>& rhs) { return !(lhs == rhs); };
 
   template <class Key, class T>
-  bool operator<  (const Map<Key, T>& lhs, const Map<Key, T>& rhs) {
-    typename Map<Key, T>::const_iterator it1 = lhs.begin();
-    typename Map<Key, T>::const_iterator it2 = rhs.begin();
+  bool operator<  (const map<Key, T>& lhs, const map<Key, T>& rhs) {
+    typename map<Key, T>::const_iterator it1 = lhs.begin();
+    typename map<Key, T>::const_iterator it2 = rhs.begin();
 
     while (it1 != lhs.end() && it2 != rhs.end()) {
       if (*it1 < *it2)
@@ -489,16 +489,16 @@ namespace ft {
   };
 
   template <class Key, class T>
-  bool operator<= (const Map<Key, T>& lhs, const Map<Key, T>& rhs) { return !(rhs < lhs); };
+  bool operator<= (const map<Key, T>& lhs, const map<Key, T>& rhs) { return !(rhs < lhs); };
 
   template <class Key, class T>
-  bool operator>  (const Map<Key, T>& lhs, const Map<Key, T>& rhs) { return rhs < lhs; };
+  bool operator>  (const map<Key, T>& lhs, const map<Key, T>& rhs) { return rhs < lhs; };
 
   template <class Key, class T>
-  bool operator>= (const Map<Key, T>& lhs, const Map<Key, T>& rhs) { return !(lhs < rhs); };
+  bool operator>= (const map<Key, T>& lhs, const map<Key, T>& rhs) { return !(lhs < rhs); };
 
   template <class Key, class T, class Compare, class Alloc>
-  void swap (Map<Key, T, Compare, Alloc>& x, Map<Key, T, Compare, Alloc>& y) {
+  void swap (map<Key, T, Compare, Alloc>& x, map<Key, T, Compare, Alloc>& y) {
     x.swap(y);
   };
 };

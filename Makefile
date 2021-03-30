@@ -6,7 +6,7 @@
 #    By: sdunckel <sdunckel@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/12/06 18:09:59 by sdunckel          #+#    #+#              #
-#    Updated: 2020/09/16 17:38:47 by sdunckel         ###   ########.fr        #
+#    Updated: 2021/03/29 16:10:35 by sdunckel         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -20,26 +20,27 @@ MAP				= map
 ALL				= $(LIST) $(STACK) $(QUEUE) $(VECTOR) $(MAP)
 
 CC				= clang++
-CFLAGS 		= -Wall -Wextra -Werror
-FSANI			= -g -fsanitize=address
+CFLAGS 		= -Wall -Wextra -Werror -std=c++98
+LFLAGS		= #-I .
+FSANI			= #-g -fsanitize=address
 RM				= rm -f
 
 all:			$(ALL)
 
-$(LIST):
-					@${CC} ${CFLAGS} ${FSANI} -o $@ tests/test_$@.cpp && ./$@
+$(LIST):	compile
+					@${CC} ${CFLAGS} $(LFLAGS) ${FSANI} -o $@ tests/test_$@.cpp && ./$@
 
-$(STACK):
-					@${CC} ${CFLAGS} ${FSANI} -o $@ tests/test_$@.cpp && ./$@
+$(STACK):	compile
+					@${CC} ${CFLAGS} $(LFLAGS) ${FSANI} -o $@ tests/test_$@.cpp && ./$@
 
-$(QUEUE):
-					@${CC} ${CFLAGS} ${FSANI} -o $@ tests/test_$@.cpp && ./$@
+$(QUEUE):	compile
+					@${CC} ${CFLAGS} $(LFLAGS) ${FSANI} -o $@ tests/test_$@.cpp && ./$@
 
 $(VECTOR): compile
-					@${CC} ${CFLAGS} ${FSANI} -o $@ tests/test_$@.cpp && ./$@
+					@${CC} ${CFLAGS} $(LFLAGS) ${FSANI} -o $@ tests/test_$@.cpp && ./$@
 
 $(MAP):		compile
-					@${CC} ${CFLAGS} ${FSANI} -o $@ tests/test_$@.cpp && ./$@
+					@${CC} ${CFLAGS} $(LFLAGS) ${FSANI} -o $@ tests/test_$@.cpp && ./$@
 
 compile:
 

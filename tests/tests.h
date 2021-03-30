@@ -12,11 +12,11 @@
 # include "../Iterators.hpp"
 # include "../Utility.hpp"
 
-# include "../List.hpp"
-# include "../Stack.hpp"
-# include "../Queue.hpp"
-# include "../Vector.hpp"
-# include "../Map.hpp"
+# include "../list.hpp"
+# include "../stack.hpp"
+# include "../queue.hpp"
+# include "../vector.hpp"
+# include "../map.hpp"
 
 # define FCT_TEST(str) (printf("\n%-4s%-15s%-4s", ">", str, ":"))
 
@@ -38,8 +38,9 @@ template <typename T>
 void TEST(T first, T second) {
   if (first == second)
     OK;
-  else
+  else {
     KO;
+  }
 }
 
 template <typename T>
