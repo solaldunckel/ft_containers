@@ -16,10 +16,6 @@ namespace ft {
     Tree                      *right_;
     Tree                      *parent_;
     ft::pair<const Key, T>    pair_;
-
-    Tree() : s_(true), left_(this), right_(this), parent_(nullptr), pair_(ft::pair<const Key, T>()) {};
-    Tree(Tree *left, Tree *right, Tree *parent, const ft::pair<const Key, T> &pair)
-        : s_(false), left_(left), right_(right), parent_(parent), pair_(pair) {};
   };
 
   template <class Key, class T, bool isconst = false>
@@ -136,34 +132,56 @@ namespace ft {
 
     explicit map(const key_compare& comp = key_compare(),
                   const allocator_type& alloc = allocator_type()) {
-      container_ = new tree();
       alloc_ = alloc;
       comp_ = comp;
       size_ = 0;
+
+      container_ = alloc_node_.allocate(1);
+      container_->s_ = true;
+      container_->left_ = container_;
+      container_->right_ = container_;
+      container_->parent_ = nullptr;
+      alloc_ = alloc;
+      alloc_.construct(&container_->pair_, value_type());
     }
 
     template <class InputIterator>
     map(InputIterator first, InputIterator last,
           const key_compare& comp = key_compare(),
             const allocator_type& alloc = allocator_type()) {
-      container_ = new tree();
       alloc_ = alloc;
       comp_ = comp;
       size_ = 0;
+
+      container_ = alloc_node_.allocate(1);
+      container_->s_ = true;
+      container_->left_ = container_;
+      container_->right_ = container_;
+      container_->parent_ = nullptr;
+      alloc_ = alloc;
+      alloc_.construct(&container_->pair_, value_type());
       insert(first, last);
     };
 
     map(const map& x) {
-      container_ = new tree();
-      alloc_ = x.alloc_;
       comp_ = x.comp_;
       size_ = 0;
+      alloc_ = x.alloc_;
+
+      container_ = alloc_node_.allocate(1);
+      container_->s_ = true;
+      container_->left_ = container_;
+      container_->right_ = container_;
+      container_->parent_ = nullptr;
+      alloc_.construct(&container_->pair_, value_type());
+
       insert(x.begin(), x.end());
     };
 
     ~map() {
       clear();
-      delete container_;
+      alloc_.destroy(&container_->pair_);
+      alloc_node_.deallocate(container_, 1);
     };
 
     map& operator= (const map& x) {
@@ -188,7 +206,7 @@ namespace ft {
 
     bool        empty() const     { return size_ == 0; };
     size_type   size() const      { return size_; };
-    size_type   max_size() const  { return std::numeric_limits<size_type>::max() / sizeof(tree);};
+    size_type   max_size() const  { return alloc_node_.max_size(); };
 
     pair<iterator, bool> insert (const value_type& val) {
       tree *exist = key_exists_recurse(get_root(), val.first);
@@ -247,7 +265,8 @@ namespace ft {
         current->parent_->right_ = tmp;
       if (current == get_root())
         container_->parent_ = tmp;
-      delete current;
+      alloc_.destroy(&current->pair_);
+      alloc_node_.deallocate(current, 1);
       size_--;
       set_left_right();
     };
@@ -412,7 +431,12 @@ namespace ft {
     {
       if (node == container_) {
         if (!node->parent_) {
-          node->parent_ = new tree(nullptr, nullptr, node, pair);
+          node->parent_ = alloc_node_.allocate(1);
+          node->parent_->left_ = nullptr;
+          node->parent_->right_ = nullptr;
+          node->parent_->parent_ = node;
+          alloc_.construct(&node->parent_->pair_, pair);
+
           node->left_ = node->parent_;
           node->right_ = node->parent_;
           return node->parent_;
@@ -423,7 +447,12 @@ namespace ft {
       if (comp(pair.first, node->pair_.first))
       {
         if (!node->left_) {
-          node->left_ = new tree(nullptr, nullptr, node, pair);
+          node->left_ = alloc_node_.allocate(1);
+          node->left_->left_ = nullptr;
+          node->left_->right_ = nullptr;
+          node->left_->parent_ = node;
+          alloc_.construct(&node->left_->pair_, pair);
+
           set_left_right();
           return node->left_;
         }
@@ -433,7 +462,12 @@ namespace ft {
       else
       {
         if (!node->right_) {
-          node->right_ = new tree(nullptr, nullptr, node, pair);
+          node->right_ = alloc_node_.allocate(1);
+          node->right_->left_ = nullptr;
+          node->right_->right_ = nullptr;
+          node->right_->parent_ = node;
+          alloc_.construct(&node->right_->pair_, pair);
+
           set_left_right();
           return node->right_;
         }
@@ -446,6 +480,8 @@ namespace ft {
     tree *get_root() const { return container_->parent_; };
     tree *get_left() const { return container_->left_; };
     tree *get_right() const { return container_->right_; };
+
+    typename allocator_type::template rebind<tree>::other alloc_node_;
 
     tree            *container_;
     allocator_type  alloc_;

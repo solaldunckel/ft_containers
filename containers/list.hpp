@@ -9,13 +9,10 @@
 
 namespace ft {
   template <class T>
-  struct Node {
-    Node  *prev_;
-    Node  *next_;
-    T     value_;
-
-    Node() : prev_(this), next_(this) {};
-    Node(Node *prev, Node *next, const T &val) : prev_(prev), next_(next), value_(val) {};
+  struct node_list {
+    node_list  *prev_;
+    node_list  *next_;
+    T           value_;
   };
 
   template <class T, bool isconst = false>
@@ -26,9 +23,9 @@ namespace ft {
     typedef T                               value_type;
     typedef std::ptrdiff_t                  difference_type;
 
-    typedef typename choose_type<isconst, const T&, T&>::type              reference;
-    typedef typename choose_type<isconst, const T*, T*>::type              pointer;
-    typedef typename choose_type<isconst, const Node<T>*, Node<T>*>::type  nodeptr;
+    typedef typename choose_type<isconst, const T&, T&>::type                         reference;
+    typedef typename choose_type<isconst, const T*, T*>::type                         pointer;
+    typedef typename choose_type<isconst, const node_list<T>*, node_list<T>*>::type   nodeptr;
 
     list_iterator() : ptr_(nullptr) {};
     list_iterator(nodeptr ptr) : ptr_(ptr) {};
@@ -82,44 +79,64 @@ namespace ft {
     typedef typename allocator_type::const_pointer      const_pointer;
 
     typedef ft::list_iterator<T>                   iterator;
-		typedef ft::list_iterator<T, true>              const_iterator;
+		typedef ft::list_iterator<T, true>             const_iterator;
 		typedef ft::reverse_iterator<iterator>         reverse_iterator;
 		typedef ft::reverse_iterator<const_iterator>   const_reverse_iterator;
 
     typedef typename iterator::difference_type     difference_type;
 
     explicit list(const allocator_type& alloc = allocator_type()) {
-      elem_ = new node();
       alloc_ = alloc;
       size_ = 0;
+
+      elem_ = alloc_node_.allocate(1);
+      elem_->prev_ = elem_;
+      elem_->next_ = elem_;
+      alloc_.construct(&elem_->value_, value_type());
     };
 
     explicit list(size_type n, const value_type& val = value_type(), const allocator_type& alloc = allocator_type()) {
-      elem_ = new node();
       alloc_ = alloc;
       size_ = 0;
+
+      elem_ = alloc_node_.allocate(1);
+      elem_->prev_ = elem_;
+      elem_->next_ = elem_;
+      alloc_.construct(&elem_->value_, value_type());
+
       insert(end(), n, val);
     };
 
     template <class InputIterator>
     list(InputIterator first, InputIterator last, const allocator_type& alloc = allocator_type(),
           typename ft::enable_if<!ft::is_integral<InputIterator>::value>::type * = 0) {
-      elem_ = new node();
       alloc_ = alloc;
       size_ = 0;
+
+      elem_ = alloc_node_.allocate(1);
+      elem_->prev_ = elem_;
+      elem_->next_ = elem_;
+      alloc_.construct(&elem_->value_, value_type());
+
       insert(end(), first, last);
     };
 
     list(list &x) {
-      elem_ = new node();
       alloc_ = x.alloc_;
       size_ = 0;
+
+      elem_ = alloc_node_.allocate(1);
+      elem_->prev_ = elem_;
+      elem_->next_ = elem_;
+      alloc_.construct(&elem_->value_, value_type());
+
       assign(x.begin(), x.end());
     };
 
     ~list() {
       clear();
-      delete elem_;
+      alloc_.destroy(&elem_->value_);
+      alloc_node_.deallocate(elem_, 1);
     };
 
     list& operator = (const list& x) {
@@ -139,7 +156,7 @@ namespace ft {
 
     bool empty() const { return size_ == 0; };
     size_type size() const { return size_; };
-    size_type max_size() const { return std::numeric_limits<size_type>::max() / sizeof(node); };
+    size_type max_size() const { return alloc_node_.max_size(); };
 
     reference front() { return elem_->next_->value_; };
     const_reference front() const { return elem_->next_->value_; };
@@ -164,7 +181,11 @@ namespace ft {
     void pop_back()                         { erase(--end()); };
 
     iterator insert (iterator position, const value_type& val) {
-      node *tmp = new node(position.ptr_->prev_, position.ptr_, val);
+      node *tmp = alloc_node_.allocate(1);
+
+      tmp->prev_ = position.ptr_->prev_;
+      tmp->next_ = position.ptr_;
+      alloc_.construct(&tmp->value_, val);
 
       tmp->prev_->next_ = tmp;
       tmp->next_->prev_ = tmp;
@@ -181,7 +202,7 @@ namespace ft {
 
     template <class InputIterator>
     void insert (iterator position, InputIterator first, InputIterator last,
-                  typename std::enable_if<!std::is_integral<InputIterator>::value>::type * = 0) {
+                  typename ft::enable_if<!ft::is_integral<InputIterator>::value>::type * = 0) {
       while (first != last) {
         insert(position, *first);
         first++;
@@ -194,7 +215,10 @@ namespace ft {
 
       elem->prev_->next_ = next;
       next->prev_ = elem->prev_;
-      delete elem;
+
+      alloc_.destroy(&elem->value_);
+      alloc_node_.deallocate(elem, 1);
+
       size_--;
       return iterator(next);
     };
@@ -399,11 +423,12 @@ namespace ft {
     };
 
    private:
-    typedef Node<T> node;
+    typedef node_list<T> node;
+    typename allocator_type::template rebind<node>::other alloc_node_;
 
-    node            *elem_;
-    size_type       size_;
-    allocator_type  alloc_;
+    node                      *elem_;
+    size_type                 size_;
+    allocator_type            alloc_;
   };
 
   template <class T>
