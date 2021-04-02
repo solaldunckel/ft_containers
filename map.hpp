@@ -105,7 +105,7 @@ namespace ft {
     };
 
     bool      operator == (const self &rhs) const   { return ptr_ == rhs.ptr_; };
-    bool      operator != (const self &rhs)         { return ptr_ != rhs.ptr_; };
+    bool      operator != (const self &rhs) const   { return ptr_ != rhs.ptr_; };
     reference operator *  () const                  { return ptr_->pair_; };
     pointer   operator -> () const                  { return &ptr_->pair_; };
 

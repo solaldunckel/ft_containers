@@ -374,6 +374,8 @@ namespace ft {
 
     template <class Compare>
     void merge(list& x, Compare comp) {
+      if (&x == this)
+        return ;
       iterator it1 = begin();
       iterator it2 = x.begin();
 
