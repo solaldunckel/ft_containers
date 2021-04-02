@@ -4,7 +4,7 @@
 # include <memory>
 # include <limits>
 # include <type_traits>
-
+#include <iostream>
 # include "Iterators.hpp"
 
 namespace ft {
@@ -178,7 +178,7 @@ namespace ft {
 
     size_type capacity() const  { return capacity_; };
     bool      empty() const     { return size_ == 0; };
-
+  
     void reserve (size_type n) {
       if (n > max_size())
         throw std::length_error("'n' exceeds maximum supported size");
@@ -186,6 +186,7 @@ namespace ft {
         return;
 
       value_type *new_container = alloc_.allocate(sizeof(T) * n);
+      // std::cout << "RESERVE " << n << std::endl;
 
       for (size_type i = 0; i < size_; i++) {
         alloc_.construct(&new_container[i], container_[i]);
@@ -220,12 +221,17 @@ namespace ft {
     void assign (InputIterator first, InputIterator last,
           typename std::enable_if<!std::is_integral<InputIterator>::value>::type * = 0) {
       clear();
+      reserve(last - first);
       insert(begin(), first, last);
     };
 
     void assign (size_type n, const value_type& val) {
       clear();
+      // std::cout << "size : " << size_ << " / capacity : " << capacity_ << std::endl;
+      reserve(n);
+      // std::cout << "capacity after : " << capacity_ << std::endl;
       insert(begin(), n, val);
+      // std::cout << "capacity after : " << capacity_ << std::endl;
     };
 
     void push_back (const value_type& val) {
@@ -268,7 +274,7 @@ namespace ft {
       size_type offset = position - begin();
 
       if (size_ + n > capacity_)
-        reserve(capacity_ + n);
+        reserve(size_ + n);
 
       for (size_type i = n + size_ - 1; i > offset + n - 1; i--) {
         alloc_.construct(&container_[i], container_[i - n]);
@@ -287,7 +293,7 @@ namespace ft {
       difference_type n = last - first;
 
       if (size_ + n > capacity_)
-        reserve(capacity_ + n);
+        reserve(size_ + n);
 
       for (size_type i = n + size_ - 1; i > offset + n - 1; i--) {
         alloc_.construct(&container_[i], container_[i - n]);

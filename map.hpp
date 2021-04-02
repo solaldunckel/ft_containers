@@ -4,26 +4,23 @@
 # include <memory>
 # include <limits>
 # include <type_traits>
+# include <algorithm>
 
 # include "Utility.hpp"
 # include "Iterators.hpp"
 
 namespace ft {
-  template <class Key, class T>
+  template <typename T>
   struct Tree {
-    bool                      s_;
-    Tree                      *left_;
-    Tree                      *right_;
-    Tree                      *parent_;
-    ft::pair<const Key, T>    pair_;
-  };
+    bool _unused;
+	#if __APPLE__ == 0
+		int _unused_for_linux;
+	#endif
 
-  template <class Key, class T>
-  struct Tree2 {
-    Tree2                      *left_;
-    Tree2                      *right_;
-    Tree2                      *parent_;
-    ft::pair<const Key, T>    pair_;
+    Tree *left_;
+    Tree *right_;
+    Tree *parent_;
+    T pair_;
   };
 
   template <class Key, class T, bool isconst = false>
@@ -38,7 +35,7 @@ namespace ft {
     typedef typename choose_type<isconst,
               const value_type*, value_type*>::type       pointer;
     typedef typename choose_type<isconst,
-              const Tree<Key, T>*, Tree<Key, T>*>::type   nodeptr;
+              const Tree<value_type>*, Tree<value_type>*>::type   nodeptr;
 
     map_iterator() : ptr_(nullptr) {};
     map_iterator(nodeptr ptr) : ptr_(ptr) {};
@@ -53,7 +50,8 @@ namespace ft {
     };
 
     self     &operator ++ () {
-      if (ptr_->s_)
+      if ((ptr_->right_ && ptr_->right_->parent_ != ptr_)
+        || (ptr_->left_ && ptr_->left_->parent_ != ptr_))
         ptr_ = ptr_->left_;
       else if (ptr_->right_) {
         ptr_ = ptr_->right_;
@@ -80,7 +78,8 @@ namespace ft {
     };
 
     self     &operator -- () {
-      if (ptr_->s_)
+      if ((ptr_->right_ && ptr_->right_->parent_ != ptr_)
+        || (ptr_->left_ && ptr_->left_->parent_ != ptr_))
         ptr_ = ptr_->right_;
       else if (ptr_->left_) {
         ptr_ = ptr_->left_;
@@ -145,7 +144,6 @@ namespace ft {
       size_ = 0;
 
       container_ = alloc_node_.allocate(1);
-      container_->s_ = true;
       container_->left_ = container_;
       container_->right_ = container_;
       container_->parent_ = nullptr;
@@ -162,7 +160,6 @@ namespace ft {
       size_ = 0;
 
       container_ = alloc_node_.allocate(1);
-      container_->s_ = true;
       container_->left_ = container_;
       container_->right_ = container_;
       container_->parent_ = nullptr;
@@ -177,7 +174,6 @@ namespace ft {
       alloc_ = x.alloc_;
 
       container_ = alloc_node_.allocate(1);
-      container_->s_ = true;
       container_->left_ = container_;
       container_->right_ = container_;
       container_->parent_ = nullptr;
@@ -214,7 +210,7 @@ namespace ft {
 
     bool        empty() const     { return size_ == 0; };
     size_type   size() const      { return size_; };
-    size_type   max_size() const  { return std::numeric_limits<size_type>::max() / sizeof(tree); };
+    size_type   max_size() const  { return alloc_node_.max_size(); };
 
     pair<iterator, bool> insert (const value_type& val) {
       tree *exist = key_exists_recurse(get_root(), val.first);
@@ -252,8 +248,14 @@ namespace ft {
         tmp = current->left_;
         while (tmp->right_)
           tmp = tmp->right_;
-        if (tmp->parent_->right_ == tmp)
-          tmp->parent_->right_ = nullptr;
+        if (tmp->parent_->right_ == tmp) {
+          if (tmp->left_) {
+            tmp->parent_->right_ = tmp->left_;
+            tmp->left_->parent_ = tmp->parent_;
+          }
+          else
+            tmp->parent_->right_ = nullptr;
+        }
         tmp->right_ = current->right_;
         if (current->right_)
           current->right_->parent_ = tmp;
@@ -394,7 +396,7 @@ namespace ft {
     };;
 
    private:
-    typedef Tree<Key, T>  tree;
+    typedef Tree<value_type>  tree;
 
     tree *key_exists_recurse(tree *root, key_type key) const {
       tree *found = get_root();
