@@ -1,6 +1,8 @@
 #ifndef ITERATORS_HPP
 # define ITERATORS_HPP
 
+# include <cstddef>
+
 namespace ft {
   template <class Iterator>
   struct iterator_traits {
@@ -43,7 +45,7 @@ namespace ft {
   };
 
   template <typename Iterator>
-  class reverse_iterator : public Iterator {
+  class reverse_iterator {
    public:
     typedef reverse_iterator    self;
     typedef Iterator            iterator_type;
@@ -56,25 +58,23 @@ namespace ft {
 
     reverse_iterator() : it_() {};
     reverse_iterator(const iterator_type copy) : it_(copy) {};
-    reverse_iterator(const self &copy) : it_(copy.it_) {};
 
     template <typename It>
-    reverse_iterator(const reverse_iterator<It> &copy) : it_(copy.it_) {};
+    reverse_iterator(const reverse_iterator<It> &copy) : it_(copy.base()) {};
 
     virtual ~reverse_iterator() {};
 
     template <class It>
 		self &operator=(const reverse_iterator<It>& other) {
-			this->it_ = other.it_;
+			this->it_ = other.base();
 			return *this;
 		}
 
-    // self &operator=(self const &other) {
-    //   this->it_ = other.it_;
-    //   return (*this);
-    // }
+    iterator_type base() const {
+      return it_;
+    }
 
-    self     operator ++ () {
+    self     &operator ++ () {
       --it_;
       return *this;
     };
@@ -83,7 +83,7 @@ namespace ft {
       --it_;
       return tmp;
     };
-    self     operator -- () {
+    self     &operator -- () {
       ++it_;
       return *this;
     };
@@ -123,42 +123,35 @@ namespace ft {
       return &*--tmp;
     };
 
-    template<typename It>
-    friend bool operator==(const reverse_iterator<It> &x,
-                            const reverse_iterator<It> &y) {
-      return x.it_ == y.it_;
-    }
+    template <class It>
+    difference_type     operator - (const reverse_iterator<It> &x) {
+      return x.base().operator-(it_);;
+    };
 
-    template<typename It>
-    friend bool operator!=(const reverse_iterator<It> &x,
-                            const reverse_iterator<It> &y) {
-      return !(x == y);
-    }
+    friend reverse_iterator	operator+(difference_type n, const reverse_iterator &rhs) {
+      // return rhs.operator+(n);
+      return rhs + n;
+    };
 
-    template<typename It>
-    friend bool operator<(const reverse_iterator<It> &x,
-                            const reverse_iterator<It> &y) {
-      return x.it_ > y.it_;
-    }
+    template <class It>
+    bool	operator==(const reverse_iterator<It> &rhs) const { return it_ == rhs.base(); };
 
-    template<typename It>
-    friend bool operator>(const reverse_iterator<It> &x,
-                            const reverse_iterator<It> &y) {
-      return y < x;
-    }
+    template <class It>
+    bool	operator!=(const reverse_iterator<It> &rhs) const { return it_ != rhs.base(); };
 
-    template<typename It>
-    friend bool operator<=(const reverse_iterator<It> &x,
-                            const reverse_iterator<It> &y) {
-      return !(x < y);
-    }
+    template <class It>
+    bool	operator<(const reverse_iterator<It> &rhs) const { return it_ > rhs.base(); };
 
-    template<typename It>
-    friend bool operator>=(const reverse_iterator<It> &x,
-                            const reverse_iterator<It> &y) {
-      return !(x > y);
-    }
+    template <class It>
+    bool	operator>(const reverse_iterator<It> &rhs) const { return it_ < rhs.base(); };
 
+    template <class It>
+    bool	operator<=(const reverse_iterator<It> &rhs) const { return it_ >= rhs.base(); };
+
+    template <class It>
+    bool	operator>=(const reverse_iterator<It> &rhs) const { return it_ <= rhs.base(); };
+
+   private:
     iterator_type it_;
   };
 };

@@ -4,8 +4,10 @@
 # include <memory>
 # include <limits>
 # include <type_traits>
+# include <iostream>
 
 # include "Iterators.hpp"
+# include "Utility.hpp"
 
 namespace ft {
   template <class T>
@@ -27,7 +29,7 @@ namespace ft {
     typedef typename choose_type<isconst, const T*, T*>::type                         pointer;
     typedef typename choose_type<isconst, const node_list<T>*, node_list<T>*>::type   nodeptr;
 
-    list_iterator() : ptr_(nullptr) {};
+    list_iterator() : ptr_(NULL) {};
     list_iterator(nodeptr ptr) : ptr_(ptr) {};
     list_iterator(const list_iterator<T, true> &copy) : ptr_(copy.ptr_) {};
     list_iterator(const list_iterator<T, false> &copy) : ptr_(copy.ptr_) {};
@@ -48,7 +50,7 @@ namespace ft {
       ++(*this);
       return tmp;
     };
-    self     operator -- () {
+    self     &operator -- () {
       ptr_ = ptr_->prev_;
       return *this;
     };
@@ -58,8 +60,8 @@ namespace ft {
       return tmp;
     };
 
-    bool      operator == (const self &rhs) const { return ptr_ == rhs.ptr_; };
-    bool      operator != (const self &rhs) const { return ptr_ != rhs.ptr_; };
+    bool      operator == (const list_iterator<T, true> &rhs) const { return ptr_ == rhs.ptr_; };
+    bool      operator != (const list_iterator<T, true> &rhs) const { return ptr_ != rhs.ptr_; };
     reference operator *  () const                { return ptr_->value_; };
     pointer   operator -> () const                { return &ptr_->value_; };
 
@@ -278,10 +280,24 @@ namespace ft {
     }
 
     void splice (iterator position, list& x, iterator first, iterator last) {
+      node *firstt = first.ptr_;
+      node *lastt = last.ptr_->prev_;
+      node *pos = position.ptr_;
+
       while (first != last) {
-        insert(position, *first);
-        first = x.erase(first);
+        size_++;
+        x.size_--;
+        ++first;
       }
+
+      firstt->prev_->next_ = lastt->next_;
+      lastt->next_->prev_ = firstt->prev_;
+
+      pos->prev_->next_ = firstt;
+      firstt->prev_ = pos->prev_;
+
+      pos->prev_ = lastt;
+      lastt->next_ = pos;
     }
 
     void remove(const value_type& val) {
@@ -353,6 +369,8 @@ namespace ft {
 
     template <class Compare>
     void merge(list& x, Compare comp) {
+      if (&x == this)
+        return ;
       iterator it1 = begin();
       iterator it2 = x.begin();
 

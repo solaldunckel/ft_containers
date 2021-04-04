@@ -4,18 +4,24 @@
 # include <memory>
 # include <limits>
 # include <type_traits>
+# include <cstddef>
+# include <algorithm>
 
 # include "Utility.hpp"
 # include "Iterators.hpp"
 
 namespace ft {
-  template <class Key, class T>
+  template <typename T>
   struct Tree {
-    bool                      s_;
-    Tree                      *left_;
-    Tree                      *right_;
-    Tree                      *parent_;
-    ft::pair<const Key, T>    pair_;
+    bool _unused;
+	#if __APPLE__ == 0
+		int _unused_for_linux;
+	#endif
+
+    Tree *left_;
+    Tree *right_;
+    Tree *parent_;
+    T pair_;
   };
 
   template <class Key, class T, bool isconst = false>
@@ -30,9 +36,9 @@ namespace ft {
     typedef typename choose_type<isconst,
               const value_type*, value_type*>::type       pointer;
     typedef typename choose_type<isconst,
-              const Tree<Key, T>*, Tree<Key, T>*>::type   nodeptr;
+              const Tree<value_type>*, Tree<value_type>*>::type   nodeptr;
 
-    map_iterator() : ptr_(nullptr) {};
+    map_iterator() : ptr_(NULL) {};
     map_iterator(nodeptr ptr) : ptr_(ptr) {};
     map_iterator(const map_iterator<Key, T, false> &copy) : ptr_(copy.ptr_) {};
     map_iterator(const map_iterator<Key, T, true> &copy) : ptr_(copy.ptr_) {};
@@ -44,8 +50,9 @@ namespace ft {
       return *this;
     };
 
-    self     operator ++ () {
-      if (ptr_->s_)
+    self     &operator ++ () {
+      if ((ptr_->right_ && ptr_->right_->parent_ != ptr_)
+        || (ptr_->left_ && ptr_->left_->parent_ != ptr_))
         ptr_ = ptr_->left_;
       else if (ptr_->right_) {
         ptr_ = ptr_->right_;
@@ -71,8 +78,9 @@ namespace ft {
       return tmp;
     };
 
-    self     operator -- () {
-      if (ptr_->s_)
+    self     &operator -- () {
+      if ((ptr_->right_ && ptr_->right_->parent_ != ptr_)
+        || (ptr_->left_ && ptr_->left_->parent_ != ptr_))
         ptr_ = ptr_->right_;
       else if (ptr_->left_) {
         ptr_ = ptr_->left_;
@@ -98,9 +106,9 @@ namespace ft {
     };
 
     bool      operator == (const self &rhs) const   { return ptr_ == rhs.ptr_; };
-    bool      operator != (const self &rhs)         { return ptr_ != rhs.ptr_; };
-    reference operator *  ()                        { return ptr_->pair_; };
-    pointer   operator -> ()                        { return &ptr_->pair_; };
+    bool      operator != (const self &rhs) const   { return ptr_ != rhs.ptr_; };
+    reference operator *  () const                  { return ptr_->pair_; };
+    pointer   operator -> () const                  { return &ptr_->pair_; };
 
     nodeptr ptr_;
   };
@@ -137,11 +145,10 @@ namespace ft {
       size_ = 0;
 
       container_ = alloc_node_.allocate(1);
-      container_->s_ = true;
       container_->left_ = container_;
       container_->right_ = container_;
-      container_->parent_ = nullptr;
-      alloc_ = alloc;
+      container_->parent_ = NULL;
+
       alloc_.construct(&container_->pair_, value_type());
     }
 
@@ -154,12 +161,11 @@ namespace ft {
       size_ = 0;
 
       container_ = alloc_node_.allocate(1);
-      container_->s_ = true;
       container_->left_ = container_;
       container_->right_ = container_;
-      container_->parent_ = nullptr;
-      alloc_ = alloc;
+      container_->parent_ = NULL;
       alloc_.construct(&container_->pair_, value_type());
+
       insert(first, last);
     };
 
@@ -169,10 +175,9 @@ namespace ft {
       alloc_ = x.alloc_;
 
       container_ = alloc_node_.allocate(1);
-      container_->s_ = true;
       container_->left_ = container_;
       container_->right_ = container_;
-      container_->parent_ = nullptr;
+      container_->parent_ = NULL;
       alloc_.construct(&container_->pair_, value_type());
 
       insert(x.begin(), x.end());
@@ -238,14 +243,20 @@ namespace ft {
 
     void      erase(iterator position) {
       tree *current = position.ptr_;
-      tree *tmp = nullptr;
+      tree *tmp = NULL;
 
       if (current->left_) {
         tmp = current->left_;
         while (tmp->right_)
           tmp = tmp->right_;
-        if (tmp->parent_->right_ == tmp)
-          tmp->parent_->right_ = nullptr;
+        if (tmp->parent_->right_ == tmp) {
+          if (tmp->left_) {
+            tmp->parent_->right_ = tmp->left_;
+            tmp->left_->parent_ = tmp->parent_;
+          }
+          else
+            tmp->parent_->right_ = NULL;
+        }
         tmp->right_ = current->right_;
         if (current->right_)
           current->right_->parent_ = tmp;
@@ -386,13 +397,13 @@ namespace ft {
     };;
 
    private:
-    typedef Tree<Key, T>  tree;
+    typedef Tree<value_type>  tree;
 
-    tree  *key_exists_recurse(tree *root, key_type key) {
+    tree *key_exists_recurse(tree *root, key_type key) const {
       tree *found = get_root();
 
       if (!root)
-        return nullptr;
+        return NULL;
       found = key_exists_recurse(root->left_, key);
       if (!comp_(root->pair_.first, key) && !comp_(key, root->pair_.first))
         found = root;
@@ -432,8 +443,8 @@ namespace ft {
       if (node == container_) {
         if (!node->parent_) {
           node->parent_ = alloc_node_.allocate(1);
-          node->parent_->left_ = nullptr;
-          node->parent_->right_ = nullptr;
+          node->parent_->left_ = NULL;
+          node->parent_->right_ = NULL;
           node->parent_->parent_ = node;
           alloc_.construct(&node->parent_->pair_, pair);
 
@@ -448,8 +459,8 @@ namespace ft {
       {
         if (!node->left_) {
           node->left_ = alloc_node_.allocate(1);
-          node->left_->left_ = nullptr;
-          node->left_->right_ = nullptr;
+          node->left_->left_ = NULL;
+          node->left_->right_ = NULL;
           node->left_->parent_ = node;
           alloc_.construct(&node->left_->pair_, pair);
 
@@ -463,8 +474,8 @@ namespace ft {
       {
         if (!node->right_) {
           node->right_ = alloc_node_.allocate(1);
-          node->right_->left_ = nullptr;
-          node->right_->right_ = nullptr;
+          node->right_->left_ = NULL;
+          node->right_->right_ = NULL;
           node->right_->parent_ = node;
           alloc_.construct(&node->right_->pair_, pair);
 

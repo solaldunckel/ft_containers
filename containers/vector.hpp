@@ -4,7 +4,12 @@
 # include <memory>
 # include <limits>
 # include <type_traits>
+# include <iostream>
+# include <string>
+# include <cstddef> // ptrdiff_t
+# include <sstream> // ostring
 
+# include "Utility.hpp"
 # include "Iterators.hpp"
 
 namespace ft {
@@ -18,19 +23,19 @@ namespace ft {
     typedef typename choose_type<isconst, const T&, T&>::type  reference;
     typedef typename choose_type<isconst, const T*, T*>::type  pointer;
 
-    vector_iterator() : ptr_(nullptr) {};
+    vector_iterator() : ptr_(NULL) {};
     vector_iterator(value_type *ptr) : ptr_(ptr) {};
-    vector_iterator(const vector_iterator<T, true> &copy) : ptr_(copy.ptr_) {};
-    vector_iterator(const vector_iterator<T> &copy) : ptr_(copy.ptr_) {};
+    vector_iterator(const vector_iterator<T, false> &copy) : ptr_(copy.ptr_) {};
+    // vector_iterator(const vector_iterator<T>  &copy) : ptr_(copy.ptr_) {};
 
     virtual ~vector_iterator() {};
 
-    self   &operator = (const self &rhs)   {
+    self   &operator = (const self &rhs) {
       ptr_ = rhs.ptr_;
       return *this;
     };
 
-    self     operator ++ () {
+    self     &operator ++ () {
       ptr_++;
       return *this;
     };
@@ -39,7 +44,7 @@ namespace ft {
       ++(*this);
       return tmp;
     };
-    self     operator -- () {
+    self     &operator -- () {
       ptr_--;
       return *this;
     };
@@ -56,30 +61,33 @@ namespace ft {
       ptr_ -= n;
       return *this;
     };
-    self     operator + (int n) {
+    self     operator + (int n) const {
       self  tmp(*this);
       return tmp += n;
     };
-    self     operator - (int n) {
+    self     operator - (int n) const {
       self  tmp(*this);
       return tmp -= n;
     };
-    difference_type     operator - (self it) {
+    difference_type     operator - (vector_iterator<T, true> it) const {
       return ptr_ - it.ptr_;
     };
     reference operator[] (size_t n) const {
       return ptr_[n];
     };
 
-    bool      operator < (const self &rhs) const   { return ptr_ < rhs.ptr_; };
-    bool      operator > (const self &rhs) const   { return ptr_ > rhs.ptr_; };
-    bool      operator <= (const self &rhs) const  { return ptr_ <= rhs.ptr_; };
-    bool      operator >= (const self &rhs) const  { return ptr_ >= rhs.ptr_; };
+    bool      operator < (const vector_iterator<T, true> &rhs) const   { return ptr_ < rhs.ptr_; };
+    bool      operator > (const vector_iterator<T, true> &rhs) const   { return ptr_ > rhs.ptr_; };
+    bool      operator <= (const vector_iterator<T, true> &rhs) const  { return ptr_ <= rhs.ptr_; };
+    bool      operator >= (const vector_iterator<T, true> &rhs) const  { return ptr_ >= rhs.ptr_; };
 
-    bool      operator == (const self &rhs) const  { return ptr_ == rhs.ptr_; };
-    bool      operator != (const self &rhs) const  { return ptr_ != rhs.ptr_; };
+    bool      operator == (const vector_iterator<T, true> &rhs) const  { return ptr_ == rhs.ptr_; };
+    bool      operator != (const vector_iterator<T, true> &rhs) const  { return ptr_ != rhs.ptr_; };
     reference operator *  () const                 { return *ptr_; };
     pointer   operator -> () const                 { return ptr_; };
+
+    friend self operator + (int n, self it) { return it += n; };
+    friend self operator - (int n, self it) { return it -= n; };
 
     pointer ptr_;
   };
@@ -103,7 +111,7 @@ namespace ft {
     typedef size_t                          size_type;
 
     explicit vector(const allocator_type& alloc = allocator_type()) {
-      container_ = nullptr;
+      container_ = NULL;
       alloc_ = alloc;
       size_ = 0;
       capacity_ = 0;
@@ -111,7 +119,7 @@ namespace ft {
 
     explicit vector(size_type n, const value_type& val = value_type(),
                  const allocator_type& alloc = allocator_type()) {
-      container_ = nullptr;
+      container_ = NULL;
       alloc_ = alloc;
       size_ = 0;
       capacity_ = 0;
@@ -121,8 +129,8 @@ namespace ft {
     template <class InputIterator>
     vector(InputIterator first, InputIterator last,
             const allocator_type& alloc = allocator_type(),
-              typename std::enable_if<!std::is_integral<InputIterator>::value>::type * = 0) {
-      container_ = nullptr;
+              typename ft::enable_if<!ft::is_integral<InputIterator>::value>::type * = 0) {
+      container_ = NULL;
       alloc_ = alloc;
       size_ = 0;
       capacity_ = 0;
@@ -130,7 +138,7 @@ namespace ft {
     };
 
     vector(const vector& x) {
-      container_ = nullptr;
+      container_ = NULL;
       alloc_ = x.alloc_;
       size_ = 0;
       capacity_ = 0;
@@ -165,8 +173,18 @@ namespace ft {
     };
 
     void resize (size_type n, value_type val = value_type()) {
-      if (size_ < n) {
-        insert(end(), n, val);
+      if (n > capacity_) {
+        if (capacity_ == 0)
+          reserve(n);
+        else {
+          if (capacity_ * 2 >= n)
+            reserve(capacity_ * 2);
+          else
+            reserve(n);
+        }
+      }
+      while (size_ < n) {
+        insert(end(), val);
       }
       while (size_ > n) {
         pop_back();
@@ -175,7 +193,7 @@ namespace ft {
 
     size_type capacity() const  { return capacity_; };
     bool      empty() const     { return size_ == 0; };
-
+  
     void reserve (size_type n) {
       if (n > max_size())
         throw std::length_error("'n' exceeds maximum supported size");
@@ -183,6 +201,7 @@ namespace ft {
         return;
 
       value_type *new_container = alloc_.allocate(sizeof(T) * n);
+      // std::cout << "RESERVE " << n << std::endl;
 
       for (size_type i = 0; i < size_; i++) {
         alloc_.construct(&new_container[i], container_[i]);
@@ -214,14 +233,26 @@ namespace ft {
     const_reference back() const { return container_[size_ - 1]; };
 
     template <class InputIterator>
-    void assign (InputIterator first, InputIterator last) {
+    void assign (InputIterator first, InputIterator last,
+          typename ft::enable_if<!ft::is_integral<InputIterator>::value>::type * = 0) {
       clear();
+      InputIterator tmp = first;
+      difference_type n = 0;
+      while (tmp != last) {
+        n++;
+        tmp++;
+      }
+      reserve(n);
       insert(begin(), first, last);
     };
 
     void assign (size_type n, const value_type& val) {
       clear();
+      // std::cout << "size : " << size_ << " / capacity : " << capacity_ << std::endl;
+      reserve(n);
+      // std::cout << "capacity after : " << capacity_ << std::endl;
       insert(begin(), n, val);
+      // std::cout << "capacity after : " << capacity_ << std::endl;
     };
 
     void push_back (const value_type& val) {
@@ -263,8 +294,16 @@ namespace ft {
     void insert (iterator position, size_type n, const value_type& val) {
       size_type offset = position - begin();
 
-      if (size_ + n > capacity_)
-        reserve(capacity_ + n);
+      if (size_ + n > capacity_) {
+        if (capacity_ == 0)
+          reserve(n);
+        else {
+          if (capacity_ * 2 >= size_ + n)
+            reserve(capacity_ * 2);
+          else
+            reserve(size_ + n);
+        }
+      }
 
       for (size_type i = n + size_ - 1; i > offset + n - 1; i--) {
         alloc_.construct(&container_[i], container_[i - n]);
@@ -278,12 +317,25 @@ namespace ft {
 
     template <class InputIterator>
     void insert (iterator position, InputIterator first, InputIterator last,
-                  typename std::enable_if<!std::is_integral<InputIterator>::value>::type * = 0) {
+                  typename ft::enable_if<!ft::is_integral<InputIterator>::value>::type * = 0) {
       size_type offset = position - begin();
-      difference_type n = last - first;
+      InputIterator tmp = first;
+      difference_type n = 0;
+      while (tmp != last) {
+        n++;
+        tmp++;
+      }
 
-      if (size_ + n > capacity_)
-        reserve(capacity_ + n);
+      if (size_ + n > capacity_) {
+        if (capacity_ == 0)
+          reserve(n);
+        else {
+          if (capacity_ * 2 >= size_ + n)
+            reserve(capacity_ * 2);
+          else
+            reserve(size_ + n);
+        }
+      }
 
       for (size_type i = n + size_ - 1; i > offset + n - 1; i--) {
         alloc_.construct(&container_[i], container_[i - n]);

@@ -1,6 +1,10 @@
 #ifndef UTILITY_HPP
 # define UTILITY_HPP
 
+# include <memory>
+# include <limits>
+# include <cstddef>
+
 namespace ft {
   template <class T>
   struct less {
@@ -18,7 +22,6 @@ namespace ft {
 
     bool operator()(const T& x, const T& y) const { return comp_(x.first, y.first); };
 
-   protected:
     Compare comp_;
   };
 
