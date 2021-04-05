@@ -1,4 +1,4 @@
-#include "tests.h"
+#include "tests.hpp"
 
 void stack_constructors() {
   ft::stack<int> mine;
@@ -82,7 +82,7 @@ void stack_operators() {
   TEST(real >= real2, mine >= mine2);
 }
 
-int main() {
+int test_stack() {
   std::cout << "Stack " << std::endl;
 
   FCT_TEST("constructors");
@@ -102,5 +102,7 @@ int main() {
 
   FCT_TEST("operators");
   stack_operators();
-  std::cout << std::endl;
+
+  std::cout << "\n" << std::endl;
+  return 0;
 }

@@ -3,95 +3,16 @@
 
 # include <memory>
 # include <limits>
-# include <type_traits>
 # include <iostream>
 # include <string>
 # include <cstddef> // ptrdiff_t
 # include <sstream> // ostring
 
+# include "vector_iterator.hpp"
+# include "reverse_iterator.hpp"
 # include "Utility.hpp"
-# include "Iterators.hpp"
 
 namespace ft {
-  template <class T, bool isconst = false>
-  struct vector_iterator {
-    typedef vector_iterator<T, isconst>      self;
-
-    typedef std::ptrdiff_t                  difference_type;
-    typedef std::bidirectional_iterator_tag iterator_category;
-    typedef T                               value_type;
-    typedef typename choose_type<isconst, const T&, T&>::type  reference;
-    typedef typename choose_type<isconst, const T*, T*>::type  pointer;
-
-    vector_iterator() : ptr_(NULL) {};
-    vector_iterator(value_type *ptr) : ptr_(ptr) {};
-    vector_iterator(const vector_iterator<T, false> &copy) : ptr_(copy.ptr_) {};
-    // vector_iterator(const vector_iterator<T>  &copy) : ptr_(copy.ptr_) {};
-
-    virtual ~vector_iterator() {};
-
-    self   &operator = (const self &rhs) {
-      ptr_ = rhs.ptr_;
-      return *this;
-    };
-
-    self     &operator ++ () {
-      ptr_++;
-      return *this;
-    };
-    self     operator ++ (int) {
-      self tmp = *this;
-      ++(*this);
-      return tmp;
-    };
-    self     &operator -- () {
-      ptr_--;
-      return *this;
-    };
-    self     operator -- (int) {
-      self tmp = *this;
-      --(*this);
-      return tmp;
-    };
-    self     operator += (int n) {
-      ptr_ += n;
-      return *this;
-    };
-    self     operator -= (int n) {
-      ptr_ -= n;
-      return *this;
-    };
-    self     operator + (int n) const {
-      self  tmp(*this);
-      return tmp += n;
-    };
-    self     operator - (int n) const {
-      self  tmp(*this);
-      return tmp -= n;
-    };
-    difference_type     operator - (vector_iterator<T, true> it) const {
-      return ptr_ - it.ptr_;
-    };
-    reference operator[] (size_t n) const {
-      return ptr_[n];
-    };
-
-    bool      operator < (const vector_iterator<T, true> &rhs) const   { return ptr_ < rhs.ptr_; };
-    bool      operator > (const vector_iterator<T, true> &rhs) const   { return ptr_ > rhs.ptr_; };
-    bool      operator <= (const vector_iterator<T, true> &rhs) const  { return ptr_ <= rhs.ptr_; };
-    bool      operator >= (const vector_iterator<T, true> &rhs) const  { return ptr_ >= rhs.ptr_; };
-
-    bool      operator == (const vector_iterator<T, true> &rhs) const  { return ptr_ == rhs.ptr_; };
-    bool      operator != (const vector_iterator<T, true> &rhs) const  { return ptr_ != rhs.ptr_; };
-    reference operator *  () const                 { return *ptr_; };
-    pointer   operator -> () const                 { return ptr_; };
-
-    friend self operator + (int n, self it) { return it += n; };
-    friend self operator - (int n, self it) { return it -= n; };
-
-    pointer ptr_;
-  };
-
   template <class T, class Alloc = std::allocator<T> >
   class vector {
    public:
@@ -166,11 +87,7 @@ namespace ft {
     const_reverse_iterator rend() const   { return const_reverse_iterator(begin()); };
 
     size_type size() const      { return size_; };
-    size_type max_size() const  {
-      size_type first = std::numeric_limits<difference_type>::max();
-      size_type second = std::numeric_limits<size_type>::max() / sizeof(T);
-      return first > second ? second : first;
-    };
+    size_type max_size() const  { return alloc_.max_size(); };
 
     void resize (size_type n, value_type val = value_type()) {
       if (n > capacity_) {
@@ -193,7 +110,7 @@ namespace ft {
 
     size_type capacity() const  { return capacity_; };
     bool      empty() const     { return size_ == 0; };
-  
+
     void reserve (size_type n) {
       if (n > max_size())
         throw std::length_error("'n' exceeds maximum supported size");
@@ -216,13 +133,25 @@ namespace ft {
     const_reference operator[] (size_type n) const { return container_[n]; };
 
     reference at (size_type n) {
-      if (n >= size_)
-        throw std::out_of_range("vector");
+      if (n >= size_) {
+        std::stringstream ss;
+        ss << "vector";
+        #ifdef __linux__
+          ss << "::_M_range_check: __n (which is " << n << ") >= this->size() (which is " << size_ << ")";
+        #endif
+        throw std::out_of_range(ss.str().c_str());
+      }
       return container_[n];
     };
     const_reference at (size_type n) const {
-      if (n >= size_)
-        throw std::out_of_range("vector");
+      if (n >= size_) {
+        std::stringstream ss;
+        ss << "vector";
+        #ifdef __linux__
+          ss << "::_M_range_check: __n (which is " << n << ") >= this->size() (which is " << size_ << ")";
+        #endif
+        throw std::out_of_range(ss.str().c_str());
+      }
       return container_[n];
     };
 
@@ -248,11 +177,8 @@ namespace ft {
 
     void assign (size_type n, const value_type& val) {
       clear();
-      // std::cout << "size : " << size_ << " / capacity : " << capacity_ << std::endl;
       reserve(n);
-      // std::cout << "capacity after : " << capacity_ << std::endl;
       insert(begin(), n, val);
-      // std::cout << "capacity after : " << capacity_ << std::endl;
     };
 
     void push_back (const value_type& val) {

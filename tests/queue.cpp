@@ -1,4 +1,4 @@
-#include "tests.h"
+#include "tests.hpp"
 
 void queue_constructors() {
   ft::queue<int> mine;
@@ -82,7 +82,7 @@ void queue_operators() {
   TEST(real >= real2, mine >= mine2);
 }
 
-int main() {
+int test_queue() {
   std::cout << "Queue " << std::endl;
 
   FCT_TEST("constructors");
@@ -102,5 +102,7 @@ int main() {
 
   FCT_TEST("operators");
   queue_operators();
-  std::cout << std::endl;
+
+  std::cout << "\n" << std::endl;
+  return 0;
 }

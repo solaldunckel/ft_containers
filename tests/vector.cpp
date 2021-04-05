@@ -1,57 +1,107 @@
-#include "tests.h"
+#include "tests.hpp"
 
-template <typename T1, typename T2>
-bool	check_vector(T1 &vct, T2 &vct2)
-{
-  if (vct.size() != vct2.size()) {
-    std::cout << "size: " << vct.size() << std::endl;
-    std::cout << "size expected: " << vct2.size() << std::endl;
+void error(std::string type) {
+  std::stringstream ss;
+
+  ss << "TEST " << g_test << ": error on " << type;
+  g_errors.push(ss.str());
+  KO;
+}
+
+template <class L1, class L2>
+bool ITERATE_VECTOR(L1 &lhs, L2 &rhs) {
+  typename L1::iterator lit = lhs.begin();
+  typename L2::iterator rit = rhs.begin();
+
+  while (lit != lhs.end() || rit != rhs.end()) {
+    if (*lit != *rit)
+      return false;
+    lit++;
+    rit++;
   }
-  if (vct.capacity() != vct2.capacity()) {
-    std::cout << "capacity: " << vct.capacity() << std::endl;
-    std::cout << "capacity expected: " << vct2.capacity() << std::endl;
+  if (lit != lhs.end() || rit != rhs.end())
+    return false;
+  return true;
+}
+
+template <class L1, class L2>
+bool ITERATE_VECTOR_REV(L1 &lhs, L2 &rhs) {
+  typename L1::reverse_iterator lit = lhs.rbegin();
+  typename L2::reverse_iterator rit = rhs.rbegin();
+
+  while (lit != lhs.rend() || rit != rhs.rend()) {
+    if (*lit != *rit)
+      return false;
+    lit++;
+    rit++;
   }
-  if (vct.max_size() != vct2.max_size()) {
-    std::cout << "max_size: " << vct.max_size() << std::endl;
-    std::cout << "max_size expected: " << vct2.max_size() << std::endl;
+  if (lit != lhs.rend() || rit != rhs.rend())
+    return false;
+  return true;
+}
+
+template <class L1, class L2>
+void TEST_VECTOR(L1 &lhs, L2 &rhs, bool rev = false) {
+  g_test++;
+  bool empty = (lhs.empty() == rhs.empty());
+  bool size = (lhs.size() == rhs.size());
+  bool max_size = (lhs.max_size() == rhs.max_size());
+  bool content = false;
+
+  if (rev)
+    content = ITERATE_VECTOR_REV(lhs, rhs);
+  else
+    content = ITERATE_VECTOR(lhs, rhs);
+
+  if (!empty) {
+    error("empty");
   }
-  ITERATE(vct, vct2);
-	return true;
+  else if (!size) {
+    error("size");
+  }
+  else if (!max_size) {
+    error("max_size");
+  }
+  else if (!content) {
+    error("content");
+  }
+  else
+    OK;
 }
 
 void vector_constructors() {
   std::vector<int> real;
   ft::vector<int> mine;
-  ITERATE(real, mine);
+  TEST_VECTOR(real, mine);
 
   std::vector<int> real6(5);
   ft::vector<int> mine6(5);
 
   std::vector<int> real5(4, 100);
   ft::vector<int> mine5(4, 100);
-  ITERATE(real5, mine5);
+  TEST_VECTOR(real5, mine5);
 
   std::vector<std::string> real2(12, "test");
   ft::vector<std::string> mine2(12, "test");
-  ITERATE(real2, mine2);
+  TEST_VECTOR(real2, mine2);
 
   std::vector<int> ww(55, 68);
   std::vector<int> real3(ww.begin(), ww.end());
   ft::vector<int> mine3(ww.begin(), ww.end());
-  ITERATE(real3, mine3);
+  TEST_VECTOR(real3, mine3);
 
   std::vector<std::string> ww2(55, "test");
   std::vector<std::string> real4(ww2.begin(), ww2.end());
   ft::vector<std::string> mine4(ww2.begin(), ww2.end());
-  ITERATE(real4, mine4);
+  TEST_VECTOR(real4, mine4);
 
   int myint[] = {0, 1, 2, 3, 4};
   std::vector<int> three(myint, myint + 3); // three ints with a value of 100
   std::vector<int> four(myint, myint + 4);  // two ints with a value of 200
   ft::vector<int> three1(myint, myint + 3); // three ints with a value of 100
   ft::vector<int> four1(myint, myint + 4);  // two ints with a value of 200
-  ITERATE(three, three1);
-  ITERATE(four, four1);
+  TEST_VECTOR(three, three1);
+  TEST_VECTOR(four, four1);
 
   ft::vector<int> vct(5);
 	ft::vector<int>::iterator it = vct.begin(), ite = vct.end();
@@ -88,10 +138,10 @@ void vector_constructors() {
 		*it2 = ++i * 7;
 	vct_copy.push_back(42);
 	vct_copy.push_back(21);
-  
-  check_vector(vct, vct2);
-  // check_vector(vct_range, vct_range2);
-  // check_vector(vct_copy, vct_copy2);
+
+  TEST_VECTOR(vct, vct2);
+  TEST_VECTOR(vct_range, vct_range2);
+  TEST_VECTOR(vct_copy, vct_copy2);
 }
 
 void vector_size() {
@@ -133,12 +183,12 @@ void vector_resize() {
   real.resize(32, 12);
   mine.resize(32, 12);
 
-  ITERATE(real, mine);
+  TEST_VECTOR(real, mine);
 
   real.resize(12, 24);
   mine.resize(12, 24);
 
-  ITERATE(real, mine);
+  TEST_VECTOR(real, mine);
 
   std::vector<int> real2;
   ft::vector<int> mine2;
@@ -155,7 +205,7 @@ void vector_resize() {
   mine2.resize(8,100);
   mine2.resize(12);
 
-  ITERATE(real2, mine2);
+  TEST_VECTOR(real2, mine2);
 }
 
 void vector_capacity() {
@@ -257,23 +307,23 @@ void vector_modifiers() {
   }
   real.assign(real2.begin(), --real2.end());
   mine.assign(real2.begin(), --real2.end());
-  ITERATE(real, mine);
+  TEST_VECTOR(real, mine);
   real.erase(real.begin() + 15, real.end());
   mine.erase(mine.begin() + 15, mine.end());
-  ITERATE(real, mine);
+  TEST_VECTOR(real, mine);
   real.erase(real.begin() + 5);
   mine.erase(mine.begin() + 5);
-  ITERATE(real, mine);
+  TEST_VECTOR(real, mine);
   real.swap(real2);
   mine.swap(mine2);
-  ITERATE(real, mine);
+  TEST_VECTOR(real, mine);
   swap(real, real2);
   swap(mine, mine2);
-  ITERATE(real, mine);
+  TEST_VECTOR(real, mine);
   real.clear();
   mine.clear();
   TEST(real.size(), mine.size());
-  ITERATE(real, mine);
+  TEST_VECTOR(real, mine);
 }
 
 void vector_operators() {
@@ -300,52 +350,39 @@ void vector_operators() {
 
   real = real2;
   mine = mine2;
-  ITERATE(real, mine);
+  TEST_VECTOR(real, mine);
 }
 
-int main() {
+int test_vector() {
   std::cout << "Vector " << std::endl;
 
-  std::vector<int> test_real(5);
-  ft::vector<int> test_mine(5);
+  FCT_TEST("constructors");
+  vector_constructors();
 
-  std::cout << "REAL CAPACITY :" << test_real.capacity() << std::endl;
-    std::cout << "MY CAPACITY :" << test_mine.capacity() << std::endl;
-  int i = 0;
-  while (i < 42) {
-    test_real.push_back(i);
-    test_mine.push_back(i);
-    std::cout << "REAL CAPACITY :" << test_real.capacity() << std::endl;
-    std::cout << "MY CAPACITY :" << test_mine.capacity() << std::endl;
-    i++;
-  }
+  FCT_TEST("size");
+  vector_size();
 
-  // FCT_TEST("constructors");
-  // vector_constructors();
+  FCT_TEST("max_size");
+  vector_max_size();
 
-  // FCT_TEST("size");
-  // vector_size();
+  FCT_TEST("resize");
+  vector_resize();
 
-  // FCT_TEST("max_size");
-  // vector_max_size();
+  FCT_TEST("empty");
+  vector_empty();
 
-  // FCT_TEST("resize");
-  // vector_resize();
+  FCT_TEST("reserve");
+  vector_reserve();
 
-  // FCT_TEST("empty");
-  // vector_empty();
+  FCT_TEST("access");
+  vector_access();
 
-  // FCT_TEST("reserve");
-  // vector_reserve();
+  FCT_TEST("modifiers");
+  vector_modifiers();
 
-  // FCT_TEST("access");
-  // vector_access();
+  FCT_TEST("operators");
+  vector_operators();
 
-  // FCT_TEST("modifiers");
-  // vector_modifiers();
-
-  // FCT_TEST("operators");
-  // vector_operators();
-
-  std::cout << std::endl;
+  std::cout << "\n" << std::endl;
+  return 0;
 }
