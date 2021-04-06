@@ -6,7 +6,7 @@
 #    By: sdunckel <sdunckel@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/12/06 18:09:59 by sdunckel          #+#    #+#              #
-#    Updated: 2021/04/05 17:28:19 by sdunckel         ###   ########.fr        #
+#    Updated: 2021/04/06 14:08:05 by sdunckel         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -29,7 +29,7 @@ SRCS			= tests/vector.cpp \
 all:			$(NAME)
 
 $(NAME):	$(OBJS)
-					${CC} ${CFLAGS} $(LFLAGS) $(OBJS) -o $(NAME)
+					${CC} ${CFLAGS} $(OBJS) -o $(NAME)
 
 %.o: %.cpp
 					${CC} $(LFLAGS) -o $@ -c $<

@@ -3,9 +3,17 @@
 void error(std::string type) {
   std::stringstream ss;
 
-  ss << "TEST " << g_test << ": error on " << type;
-  g_errors.push(ss.str());
+  // ss << "TEST " << g_test << ": error on " << type;
+  // g_errors.push(ss.str());
   KO;
+  std::cout << "error: " << type;
+  
+}
+
+template <class T1, class T2>
+bool vector_error(T1 &l, T2 &r) {
+  std::cerr << "error: got " << r << " expected " << l << std::endl;
+  return false;
 }
 
 template <class L1, class L2>
@@ -15,7 +23,7 @@ bool ITERATE_VECTOR(L1 &lhs, L2 &rhs) {
 
   while (lit != lhs.end() || rit != rhs.end()) {
     if (*lit != *rit)
-      return false;
+      return vector_error(*lit, *rit);
     lit++;
     rit++;
   }
@@ -31,7 +39,7 @@ bool ITERATE_VECTOR_REV(L1 &lhs, L2 &rhs) {
 
   while (lit != lhs.rend() || rit != rhs.rend()) {
     if (*lit != *rit)
-      return false;
+      return vector_error(*lit, *rit);
     lit++;
     rit++;
   }
@@ -42,7 +50,6 @@ bool ITERATE_VECTOR_REV(L1 &lhs, L2 &rhs) {
 
 template <class L1, class L2>
 void TEST_VECTOR(L1 &lhs, L2 &rhs, bool rev = false) {
-  g_test++;
   bool empty = (lhs.empty() == rhs.empty());
   bool size = (lhs.size() == rhs.size());
   bool max_size = (lhs.max_size() == rhs.max_size());

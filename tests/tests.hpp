@@ -16,8 +16,8 @@
 # include "stack.hpp"
 # include "queue.hpp"
 
-static std::queue<std::string> g_errors;
-static int g_test = 0;
+// static std::queue<std::string> g_errors;
+// static int g_test = 0;
 
 // # define TESTING_VAR true
 
@@ -35,14 +35,7 @@ static int g_test = 0;
 # define OK (printf(GREEN "[OK] " RESET))
 # define KO (printf(RED "[KO] " RESET))
 
-void FCT_TEST(std::string str) {
-  while (!g_errors.empty()) {
-    std::cout << "\n" << g_errors.front();
-    g_errors.pop();
-  }
-  g_test = 0;
-  printf("\n%-4s%-15s%-4s", ">", str.c_str(), ":");
-}
+# define FCT_TEST(str) (printf("\n%-4s%-15s%-4s", ">", str, ":"))
 
 template <typename T>
 void TEST(T first, T second) {
