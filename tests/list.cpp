@@ -558,56 +558,102 @@ void list_operators() {
   TEST_LIST(real, mine);
 }
 
+template <typename T>
+inline bool binaryPredicateTest(const T& a, const T& b) { return a < b; } // Inline keywork to avoid duplicate symbol error
+
 int test_list() {
   std::cout << "List " << std::endl;
 
-  FCT_TEST("constructors");
-  list_constructors();
+  const int arrInt[20] = {58966, 2147483647, 256, -2147483648, 0, 
+                            -1, 2, 3, 4, 5, 6, 7, 7, 8, 54634152, 9, 
+                            10, 11, 56, 56465};
 
-  FCT_TEST("push_front");
-  list_push_front();
+  ft::list<int> test;
 
-  FCT_TEST("push_back");
-  list_push_back();
+  for (int i = 0; i < 20; i++) {
+    test.push_back(arrInt[i]);
+  }
 
-  FCT_TEST("size");
-  list_size();
+  std::cout << "\nBEFORE" << std::endl;
+  for (ft::list<int>::iterator it = test.begin(); it != test.end(); it++) {
+    std::cout << *it << std::endl;
+  }
 
-  FCT_TEST("empty");
-  list_empty();
+  test.unique();
 
-  FCT_TEST("max_size");
-  list_max_size();
+  std::cout << "\nAFTER" << std::endl;
 
-  FCT_TEST("erase");
-  list_erase();
+  for (ft::list<int>::iterator it = test.begin(); it != test.end(); it++) {
+    std::cout << *it << std::endl;
+  }
 
-  FCT_TEST("sort");
-  list_sort();
+  std::list<int> test2;
 
-  FCT_TEST("remove");
-  list_remove();
+  for (int i = 0; i < 20; i++) {
+    test2.push_back(arrInt[i]);
+  }
 
-  FCT_TEST("unique");
-  list_unique();
+  std::cout << "\nBEFORE" << std::endl;
 
-  FCT_TEST("splice");
-  list_splice();
+  for (std::list<int>::iterator it = test2.begin(); it != test2.end(); it++) {
+    std::cout << *it << std::endl;
+  }
 
-  FCT_TEST("reverse");
-  list_reverse();
+  test2.unique();
 
-  FCT_TEST("merge");
-  list_merge();
+  std::cout << "\nAFTER" << std::endl;
 
-  FCT_TEST("swap");
-  list_swap();
+  for (std::list<int>::iterator it = test2.begin(); it != test2.end(); it++) {
+    std::cout << *it << std::endl;
+  }
 
-  FCT_TEST("iterators");
-  list_iterators();
+  // FCT_TEST("constructors");
+  // list_constructors();
 
-  FCT_TEST("operators");
-  list_operators();
+  // FCT_TEST("push_front");
+  // list_push_front();
+
+  // FCT_TEST("push_back");
+  // list_push_back();
+
+  // FCT_TEST("size");
+  // list_size();
+
+  // FCT_TEST("empty");
+  // list_empty();
+
+  // FCT_TEST("max_size");
+  // list_max_size();
+
+  // FCT_TEST("erase");
+  // list_erase();
+
+  // FCT_TEST("sort");
+  // list_sort();
+
+  // FCT_TEST("remove");
+  // list_remove();
+
+  // FCT_TEST("unique");
+  // list_unique();
+
+  // FCT_TEST("splice");
+  // list_splice();
+
+  // FCT_TEST("reverse");
+  // list_reverse();
+
+  // FCT_TEST("merge");
+  // list_merge();
+
+  // FCT_TEST("swap");
+  // list_swap();
+
+  // FCT_TEST("iterators");
+  // list_iterators();
+
+  // FCT_TEST("operators");
+  // list_operators();
 
   std::cout << "\n" << std::endl;
   return 1;

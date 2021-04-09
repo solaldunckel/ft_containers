@@ -191,17 +191,17 @@ void map_modifiers() {
 int test_map() {
   std::cout << "Map " << std::endl;
 
-  FCT_TEST("constructors");
-  map_constructors();
+  // FCT_TEST("constructors");
+  // map_constructors();
 
-  FCT_TEST("capacity");
-  map_capacity();
+  // FCT_TEST("capacity");
+  // map_capacity();
 
-  FCT_TEST("access");
-  map_access();
+  // FCT_TEST("access");
+  // map_access();
 
-  FCT_TEST("modifiers");
-  map_modifiers();
+  // FCT_TEST("modifiers");
+  // map_modifiers();
 
   std::cout << "\n" << std::endl;
   return 0;

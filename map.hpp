@@ -180,18 +180,9 @@ namespace ft {
 
     size_type erase(const key_type& k) {
       iterator it = begin();
-      iterator tmp;
       size_type count = 0;
 
-      while (it != end()) {
-        if (!comp_(it->first, k) && !comp_(k, it->first)) {
-          erase(it);
-          count++;
-          return count;
-        }
-        else
-          it++;
-      }
+      erase(find(k));
       return count;
     };
 
@@ -285,11 +276,11 @@ namespace ft {
     };
 
     ft::pair<iterator, iterator>             equal_range (const key_type& k) {
-      return ft::make_pair(lower_bound(k), upper_bound(k));
+      return make_pair(lower_bound(k), upper_bound(k));
     };
 
     ft::pair<const_iterator, const_iterator> equal_range (const key_type& k) const {
-      return ft::make_pair(lower_bound(k), upper_bound(k));
+      return make_pair(lower_bound(k), upper_bound(k));
     };;
 
    private:
@@ -344,7 +335,8 @@ namespace ft {
           node->parent_->parent_ = node;
           alloc_.construct(&node->parent_->pair_, pair);
 
-          set_left_right();
+          node->left_ = node->parent_;
+          node->right_ = node->parent_;
           return node->parent_;
         }
         else

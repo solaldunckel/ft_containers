@@ -65,7 +65,7 @@ namespace ft {
       insert(end(), first, last);
     };
 
-    list(const list &x) {
+    list(list &x) {
       alloc_ = x.alloc_;
       size_ = 0;
 
@@ -79,8 +79,8 @@ namespace ft {
 
     ~list() {
       clear();
-      // alloc_.destroy(&elem_->value_);
-      // alloc_node_.deallocate(elem_, 1);
+      alloc_.destroy(&elem_->value_);
+      alloc_node_.deallocate(elem_, 1);
     };
 
     list& operator = (const list& x) {
@@ -201,9 +201,7 @@ namespace ft {
     };
 
     void splice (iterator position, list& x) {
-      while (x.size()) {
-        splice(position, x, x.begin());
-      }
+      splice(position, x, x.begin(), x.end());
     }
 
     void splice (iterator position, list& x, iterator i) {
@@ -225,34 +223,23 @@ namespace ft {
 
     void splice (iterator position, list& x, iterator first, iterator last) {
       node *firstt = first.ptr_;
-      node *lastt = last.ptr_;
+      node *lastt = last.ptr_->prev_;
       node *pos = position.ptr_;
 
-      if (first == last)
-        return ;
-      if (firstt->next_ == lastt) {
-        splice(position, x, first);
-        return ;
-      }
-
-      iterator it = first;
-
-      while (it != last) {
+      while (first != last) {
         size_++;
         x.size_--;
-        ++it;
+        ++first;
       }
 
-      node *lastPrev = lastt->prev_;
-
-      firstt->prev_->next_ = lastt;
-      lastt->prev_ = firstt->prev_;
-
-      firstt->prev_ = pos->prev_;
-      lastPrev->next_ = pos;
+      firstt->prev_->next_ = lastt->next_;
+      lastt->next_->prev_ = firstt->prev_;
 
       pos->prev_->next_ = firstt;
-      pos->prev_ = lastPrev;
+      firstt->prev_ = pos->prev_;
+
+      pos->prev_ = lastt;
+      lastt->next_ = pos;
     }
 
     void remove(const value_type& val) {
@@ -283,9 +270,9 @@ namespace ft {
     void unique() {
       iterator it1 = begin();
 
-      it1++;
-      while (it1 != end()) {
-        if (*it1 == it1.ptr_->prev_->value_)
+      while (it1 != end())
+      {
+        if (it1.ptr_->prev_ != end().ptr_ && *it1 == it1.ptr_->prev_->value_)
           it1 = erase(it1);
         else
           it1++;
@@ -296,9 +283,9 @@ namespace ft {
     void unique(BinaryPredicate binary_pred) {
       iterator it1 = begin();
 
-      it1++;
-      while (it1 != end()) {
-        if (binary_pred(it1.ptr_->prev_->value_, *it1))
+      while (it1 != end())
+      {
+        if (it1.ptr_->prev_ != end().ptr_ && binary_pred(*it1, it1.ptr_->prev_->value_))
           it1 = erase(it1);
         else
           it1++;
@@ -311,7 +298,7 @@ namespace ft {
       iterator it1 = begin();
       iterator it2 = x.begin();
 
-      while (it1 != end() && it2 != x.end()) {
+      while (it1 != end() || it2 == x.end()) {
         if (*it2 < *it1) {
           splice(it1, x, it2);
           if (x.empty())
@@ -330,9 +317,6 @@ namespace ft {
         return ;
       iterator it1 = begin();
       iterator it2 = x.begin();
-
-      if (x.empty())
-        return ;
 
       while (it1 != end() && it2 != x.end()) {
         if (comp(*it2, *it1)) {
