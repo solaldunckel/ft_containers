@@ -7,14 +7,14 @@
 
 # include "list_iterator.hpp"
 # include "reverse_iterator.hpp"
-# include "Utility.hpp"
+# include "utils_containers.hpp"
 
 namespace ft {
-  template <class T, class Alloc = std::allocator<T> >
+  template <class T, class Alloc = ft::allocator<T> >
   class list {
    public:
     typedef T           value_type;
-    typedef size_t      size_type;
+    typedef std::size_t size_type;
     typedef Alloc       allocator_type;
 
     typedef typename allocator_type::reference          reference;
@@ -79,8 +79,8 @@ namespace ft {
 
     ~list() {
       clear();
-      // alloc_.destroy(&elem_->value_);
-      // alloc_node_.deallocate(elem_, 1);
+      alloc_.destroy(&elem_->value_);
+      alloc_node_.deallocate(elem_, 1);
     };
 
     list& operator = (const list& x) {

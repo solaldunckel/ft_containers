@@ -16,13 +16,62 @@ namespace ft {
   };
 
   template <class Compare, class T>
-  class comp {
+  class Comp {
    public:
-    comp(Compare c) : comp_(c) {};
+    Comp(Compare c) : comp_(c) {};
 
     bool operator()(const T& x, const T& y) const { return comp_(x.first, y.first); };
 
     Compare comp_;
+  };
+
+  // ALLOCATOR
+
+  template <class T>
+  class allocator {
+   public:
+    typedef T        value_type;
+    typedef T*       pointer;
+    typedef const T* const_pointer;
+    typedef T&       reference;
+    typedef const T& const_reference;
+    typedef std::size_t    size_type;
+    typedef std::ptrdiff_t difference_type;
+
+    template <class U>
+    struct rebind { typedef ft::allocator<U> other; };
+
+    // return address of values
+    pointer address (reference value) const { return &value; }
+    const_pointer address (const_reference value) const { return &value; }
+
+    allocator() throw() {}
+    allocator(const allocator&) throw() {}
+
+    template <class U>
+    allocator (const allocator<U>&) throw() {}
+
+    ~allocator() throw() {}
+
+    size_type max_size () const throw() { return std::numeric_limits<std::size_t>::max() / sizeof(T); }
+
+    pointer allocate (size_type num, const void* = 0) {
+      return reinterpret_cast<pointer>(::operator new(num * sizeof (T)));
+    }
+
+    void construct (pointer p, const T& value) {
+      new(p) T(value);
+    }
+
+    void destroy (pointer p) {
+      p->~T();
+    }
+
+    void deallocate (pointer p, size_type) {
+      ::operator delete(p);
+    }
+    bool operator== (const allocator&) throw() { return true; }
+    bool operator!= (const allocator &a) throw() { return !operator==(a); }
   };
 
   // ENABLE_IF / IS_INTEGRAL
@@ -68,6 +117,8 @@ namespace ft {
 
   template <>
   struct is_integral<unsigned long long> { static const bool value = true; };
+
+  // PAIR
 
   template <class T1, class T2>
   struct pair {

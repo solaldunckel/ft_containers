@@ -7,9 +7,9 @@ namespace ft {
   template <class T, class Container = ft::list<T> >
   class stack {
    public:
-    typedef T         value_type;
-    typedef Container container_type;
-    typedef size_t    size_type;
+    typedef T           value_type;
+    typedef Container   container_type;
+    typedef std::size_t size_type;
 
     explicit stack(const container_type& ctnr = container_type()) {
       c_ = ctnr;

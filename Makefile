@@ -6,7 +6,7 @@
 #    By: sdunckel <sdunckel@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/12/06 18:09:59 by sdunckel          #+#    #+#              #
-#    Updated: 2021/04/08 15:30:59 by sdunckel         ###   ########.fr        #
+#    Updated: 2021/04/11 23:16:00 by sdunckel         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -31,8 +31,11 @@ all:			$(NAME)
 $(NAME):	$(OBJS)
 					${CC} ${CFLAGS} $(OBJS) -o $(NAME)
 
+print: 		$(OBJS)
+					${CC} ${CFLAGS} $(OBJS) -o $(NAME)
+
 %.o: %.cpp
-					${CC} $(CFLAGS) $(LFLAGS) -o $@ -c $<
+					${CC} $(CFLAGS) -DPRINT $(LFLAGS) -o $@ -c $<
 
 clean:
 					${RM} $(OBJS)

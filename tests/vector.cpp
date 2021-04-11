@@ -109,46 +109,6 @@ void vector_constructors() {
   ft::vector<int> four1(myint, myint + 4);  // two ints with a value of 200
   TEST_VECTOR(three, three1);
   TEST_VECTOR(four, four1);
-
-  ft::vector<int> vct(5);
-	ft::vector<int>::iterator it = vct.begin(), ite = vct.end();
-
-	for (; it != ite; ++it)
-		*it = (ite - it);
-
-	it = vct.begin();
-	ft::vector<int> vct_range(it, --(--ite));
-	for (int i = 0; it != ite; ++it)
-		*it = ++i * 5;
-
-	it = vct.begin();
-	ft::vector<int> vct_copy(vct);
-	for (int i = 0; it != ite; ++it)
-		*it = ++i * 7;
-	vct_copy.push_back(42);
-	vct_copy.push_back(21);
-
-  std::vector<int> vct2(5);
-	std::vector<int>::iterator it2 = vct2.begin(), ite2 = vct2.end();
-
-	for (; it2 != ite2; ++it2)
-		*it2 = (ite2 - it2);
-
-	it2 = vct2.begin();
-	std::vector<int> vct_range2(it2, --(--ite2));
-	for (int i = 0; it2 != ite2; ++it2)
-		*it2 = ++i * 5;
-
-	it = vct.begin();
-	std::vector<int> vct_copy2(vct2);
-	for (int i = 0; it2 != ite2; ++it2)
-		*it2 = ++i * 7;
-	vct_copy.push_back(42);
-	vct_copy.push_back(21);
-
-  TEST_VECTOR(vct, vct2);
-  TEST_VECTOR(vct_range, vct_range2);
-  TEST_VECTOR(vct_copy, vct_copy2);
 }
 
 void vector_size() {
@@ -362,6 +322,53 @@ void vector_operators() {
 
 int test_vector() {
   std::cout << "Vector " << std::endl;
+
+  // const int arrInt[20] = {58966, 2147483647, 256, -2147483648, 0, 
+  //                           -1, 2, 3, 4, 5, 6, 7, 7, 8, 54634152, 9, 
+  //                           10, 11, 56, 56465};
+
+  //   const std::string arrString[20] = {"hello coco", "j'arrive", "oui-oui", "kafeolait", 
+  //                                       "jul d'ananas", "jul d'ananas", "42", "jura", 
+  //                                       "saperlipopette", "anticonstitutionnellement", 
+  //                                       "Pneumonoultramicroscopicsilicovolcanoconiosis", "Blue", 
+  //                                       "Red", "Orange", "Yellow", "boulette de viande hache",
+  //                                       "raviolis du nord est", "PNY", "street bangkok", "confifi"};
+
+  // {
+  //   std::cout << "REAL" << std::endl;
+  //   std::vector<int> Test;
+  //   (void)arrInt;
+  //   for (int i = 0; i < 10; i++) {
+  //     Test.push_back(arrInt[i]);
+  //   }
+
+  //   for (std::vector<int>::iterator it = Test.begin(); it != Test.end(); ++it)
+  //     std::cout << *it << " | ";
+
+  //   std::vector<int>::iterator iter = Test.erase(Test.begin(), Test.begin() + 1);
+
+  //   for (std::vector<int>::iterator it = Test.begin(); it != iter; ++it)
+  //     std::cout << *it << " | ";
+  // }
+
+  // {
+  //   std::cout << "FT" << std::endl;
+  //   ft::vector<int> Test;
+  //   (void)arrInt;
+  //   for (int i = 0; i < 10; i++) {
+  //     Test.push_back(arrInt[i]);
+  //   }
+
+  //   for (ft::vector<int>::iterator it = Test.begin(); it != Test.end(); ++it)
+  //     std::cout << *it << " | ";
+
+  //   ft::vector<int>::iterator iter = Test.erase(Test.begin(), Test.begin() + 1);
+
+  //   for (ft::vector<int>::iterator it = Test.begin(); it != iter; ++it)
+  //     std::cout << *it << " | ";
+  // }
+  //     std::cout << "OUT" << std::endl;
+
 
   FCT_TEST("constructors");
   vector_constructors();

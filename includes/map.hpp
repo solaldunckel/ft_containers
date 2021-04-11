@@ -10,7 +10,7 @@
 
 namespace ft {
   template <class Key, class T, class Compare = ft::less<Key>,
-              class Alloc = std::allocator<ft::pair<const Key, T> > >
+              class Alloc = ft::allocator<ft::pair<const Key, T> > >
   class map {
    public:
 
@@ -18,7 +18,7 @@ namespace ft {
     typedef T                                       mapped_type;
     typedef ft::pair<const key_type, mapped_type>   value_type;
     typedef Compare                                 key_compare;
-    typedef ft::comp<Compare, value_type>           value_compare;
+    typedef ft::Comp<Compare, value_type>           value_compare;
 
     typedef Alloc                                     allocator_type;;
     typedef typename allocator_type::reference        reference;
@@ -32,7 +32,7 @@ namespace ft {
     typedef ft::reverse_iterator<const_iterator>           const_reverse_iterator;
 
     typedef std::ptrdiff_t                  difference_type;
-    typedef size_t                          size_type;
+    typedef std::size_t                     size_type;
 
     explicit map(const key_compare& comp = key_compare(),
                   const allocator_type& alloc = allocator_type()) {

@@ -10,10 +10,10 @@
 
 # include "vector_iterator.hpp"
 # include "reverse_iterator.hpp"
-# include "Utility.hpp"
+# include "utils_containers.hpp"
 
 namespace ft {
-  template <class T, class Alloc = std::allocator<T> >
+  template <class T, class Alloc = ft::allocator<T> >
   class vector {
    public:
     typedef T       value_type;
@@ -29,7 +29,7 @@ namespace ft {
     typedef ft::reverse_iterator<iterator>       reverse_iterator;
     typedef ft::reverse_iterator<const_iterator> const_reverse_iterator;
     typedef std::ptrdiff_t                  difference_type;
-    typedef size_t                          size_type;
+    typedef std::size_t                     size_type;
 
     explicit vector(const allocator_type& alloc = allocator_type()) {
       container_ = NULL;
@@ -113,12 +113,11 @@ namespace ft {
 
     void reserve (size_type n) {
       if (n > max_size())
-        throw std::length_error("'n' exceeds maximum supported size");
+        throw std::length_error("allocator<T>::allocate(size_t n) 'n' exceeds maximum supported size");
       if (n < capacity_)
         return;
 
       value_type *new_container = alloc_.allocate(sizeof(T) * n);
-      // std::cout << "RESERVE " << n << std::endl;
 
       for (size_type i = 0; i < size_; i++) {
         alloc_.construct(&new_container[i], container_[i]);
@@ -193,12 +192,14 @@ namespace ft {
     };
 
     void pop_back() {
-      alloc_.destroy(&container_[size_ - 1]);
-      size_--;
+      if (size_) {
+        alloc_.destroy(&container_[size_ - 1]);
+        size_--;
+      }
     };
 
     iterator insert (iterator position, const value_type& val) {
-      size_type offset = position - begin();
+      size_type index = position - begin();
 
       if (size_ + 1 > capacity_) {
         if (capacity_ == 0)
@@ -206,19 +207,19 @@ namespace ft {
         else
           reserve(capacity_ * 2);
       }
-      if (offset < size_ - 1) {
-        for (size_type i = size_; i > offset; i--) {
+      size_++;
+      if (index < size_) {
+        for (size_type i = size_; i > index; i--) {
           alloc_.construct(&container_[i], container_[i - 1]);
           alloc_.destroy(&container_[i - 1]);
         }
       }
-      alloc_.construct(&container_[offset], val);
-      size_++;
-      return iterator(&container_[offset]);
+      alloc_.construct(&container_[index], val);
+      return iterator(&container_[index]);
     };
 
     void insert (iterator position, size_type n, const value_type& val) {
-      size_type offset = position - begin();
+      size_type index = position - begin();
 
       if (size_ + n > capacity_) {
         if (capacity_ == 0)
@@ -231,11 +232,11 @@ namespace ft {
         }
       }
 
-      for (size_type i = n + size_ - 1; i > offset + n - 1; i--) {
+      for (size_type i = n + size_ - 1; i > index + n - 1; i--) {
         alloc_.construct(&container_[i], container_[i - n]);
         alloc_.destroy(&container_[i - n]);
       }
-      for (size_type i = offset; i < offset + n; i++) {
+      for (size_type i = index; i < index + n; i++) {
         alloc_.construct(&container_[i], val);
         size_++;
       }
@@ -275,31 +276,31 @@ namespace ft {
     };
 
     iterator erase (iterator position) {
-      size_type offset = position - begin();
+      size_type index = position - begin();
 
-      alloc_.destroy(&container_[offset]);
-      if (offset < size_ - 1) {
-        for (size_type i = offset; i < size_ + offset; i++)
+      alloc_.destroy(&container_[index]);
+      size_--;
+      if (index < size_) {
+        for (size_type i = index; i < size_; i++)
           alloc_.construct(&container_[i], container_[i + 1]);
       }
-      size_--;
-      return iterator(&container_[offset]);
+      return iterator(&container_[index]);
     };
 
     iterator erase (iterator first, iterator last) {
       size_type start = first - begin();
       size_type end = last - begin();
-      difference_type offset = last - first;
+      difference_type offset = end - start;
 
       for (size_type i = start; i < end; i++) {
         alloc_.destroy(&container_[i]);
       }
-      if (start < size_ - 1) {
-        for (size_type i = start; i < size_ + offset; i++) {
+      size_ -= offset;
+      if (start < size_) {
+        for (size_type i = start; i < size_; i++) {
           alloc_.construct(&container_[i], container_[i + offset]);
         }
       }
-      size_ -= offset;
       return iterator(&container_[start]);
     };
 
