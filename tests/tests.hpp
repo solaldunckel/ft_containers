@@ -7,6 +7,8 @@
 # include <queue>
 # include <vector>
 # include <map>
+# include <utility>
+# include <sys/types.h>
 
 # include <stdio.h>
 

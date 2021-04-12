@@ -113,8 +113,8 @@ void list_push_back() {
   ft::list<std::string> letters2;
   letters2.push_back("abc");
   std::string s = "def";
-  letters.push_back(std::move(s));
-  letters2.push_back(std::move(s));
+  letters.push_back(s);
+  letters2.push_back(s);
   TEST_LIST(letters, letters2);
 }
 

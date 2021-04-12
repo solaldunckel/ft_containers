@@ -113,7 +113,7 @@ namespace ft {
 
     void reserve (size_type n) {
       if (n > max_size())
-        throw std::length_error("allocator<T>::allocate(size_t n) 'n' exceeds maximum supported size");
+        throw std::length_error("vector::reserve");
       if (n < capacity_)
         return;
 
@@ -248,6 +248,7 @@ namespace ft {
       size_type offset = position - begin();
       InputIterator tmp = first;
       difference_type n = 0;
+
       while (tmp != last) {
         n++;
         tmp++;
