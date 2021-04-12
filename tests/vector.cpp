@@ -175,27 +175,6 @@ void vector_resize() {
   TEST_VECTOR(real2, mine2);
 }
 
-void vector_capacity() {
-  std::vector<int> real;
-  ft::vector<int> mine;
-
-  TEST(real.capacity(), mine.capacity());
-
-  for (int i=1;i<100;i++) {
-    real.push_back(i);
-    mine.push_back(i);
-  }
-
-  TEST(real.capacity(), mine.capacity());
-
-  for (int i=1;i<100;i++) {
-    real.push_back(i);
-    mine.push_back(i);
-  }
-
-  TEST(real.capacity(), mine.capacity());
-}
-
 void vector_empty() {
   std::vector<int> real;
   ft::vector<int> mine;
@@ -233,6 +212,33 @@ void vector_reserve() {
 
   real.reserve(122);
   mine.reserve(122);
+
+  TEST(real.capacity(), mine.capacity());
+}
+
+void vector_capacity() {
+  vector_size();
+  vector_max_size();
+  vector_resize();
+  vector_empty();
+  vector_reserve();
+
+  std::vector<int> real;
+  ft::vector<int> mine;
+
+  TEST(real.capacity(), mine.capacity());
+
+  for (int i=1;i<100;i++) {
+    real.push_back(i);
+    mine.push_back(i);
+  }
+
+  TEST(real.capacity(), mine.capacity());
+
+  for (int i=1;i<100;i++) {
+    real.push_back(i);
+    mine.push_back(i);
+  }
 
   TEST(real.capacity(), mine.capacity());
 }
@@ -323,70 +329,11 @@ void vector_operators() {
 int test_vector() {
   std::cout << "Vector " << std::endl;
 
-  // const int arrInt[20] = {58966, 2147483647, 256, -2147483648, 0, 
-  //                           -1, 2, 3, 4, 5, 6, 7, 7, 8, 54634152, 9, 
-  //                           10, 11, 56, 56465};
-
-  //   const std::string arrString[20] = {"hello coco", "j'arrive", "oui-oui", "kafeolait", 
-  //                                       "jul d'ananas", "jul d'ananas", "42", "jura", 
-  //                                       "saperlipopette", "anticonstitutionnellement", 
-  //                                       "Pneumonoultramicroscopicsilicovolcanoconiosis", "Blue", 
-  //                                       "Red", "Orange", "Yellow", "boulette de viande hache",
-  //                                       "raviolis du nord est", "PNY", "street bangkok", "confifi"};
-
-  // {
-  //   std::cout << "REAL" << std::endl;
-  //   std::vector<int> Test;
-  //   (void)arrInt;
-  //   for (int i = 0; i < 10; i++) {
-  //     Test.push_back(arrInt[i]);
-  //   }
-
-  //   for (std::vector<int>::iterator it = Test.begin(); it != Test.end(); ++it)
-  //     std::cout << *it << " | ";
-
-  //   std::vector<int>::iterator iter = Test.erase(Test.begin(), Test.begin() + 1);
-
-  //   for (std::vector<int>::iterator it = Test.begin(); it != iter; ++it)
-  //     std::cout << *it << " | ";
-  // }
-
-  // {
-  //   std::cout << "FT" << std::endl;
-  //   ft::vector<int> Test;
-  //   (void)arrInt;
-  //   for (int i = 0; i < 10; i++) {
-  //     Test.push_back(arrInt[i]);
-  //   }
-
-  //   for (ft::vector<int>::iterator it = Test.begin(); it != Test.end(); ++it)
-  //     std::cout << *it << " | ";
-
-  //   ft::vector<int>::iterator iter = Test.erase(Test.begin(), Test.begin() + 1);
-
-  //   for (ft::vector<int>::iterator it = Test.begin(); it != iter; ++it)
-  //     std::cout << *it << " | ";
-  // }
-  //     std::cout << "OUT" << std::endl;
-
-
   FCT_TEST("constructors");
   vector_constructors();
 
-  FCT_TEST("size");
-  vector_size();
-
-  FCT_TEST("max_size");
-  vector_max_size();
-
-  FCT_TEST("resize");
-  vector_resize();
-
-  FCT_TEST("empty");
-  vector_empty();
-
-  FCT_TEST("reserve");
-  vector_reserve();
+  FCT_TEST("capacity");
+  vector_capacity();
 
   FCT_TEST("access");
   vector_access();

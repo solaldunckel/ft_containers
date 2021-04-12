@@ -17,7 +17,6 @@ namespace ft {
     vector_iterator() : ptr_(NULL) {};
     vector_iterator(value_type *ptr) : ptr_(ptr) {};
     vector_iterator(const vector_iterator<T, false> &copy) : ptr_(copy.ptr_) {};
-    // vector_iterator(const vector_iterator<T>  &copy) : ptr_(copy.ptr_) {};
 
     virtual ~vector_iterator() {};
 

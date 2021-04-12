@@ -16,66 +16,39 @@ bool ITERATE_LIST_REV(L1 &lhs, L2 &rhs) {
   return true;
 }
 
-#ifdef PRINT
-  template <class L1, class L2>
-  bool ITERATE_LIST(L1 &lhs, L2 &rhs) {
-    typename L1::iterator lit = lhs.begin();
-    typename L2::iterator rit = rhs.begin();
+template <class L1, class L2>
+bool ITERATE_LIST(L1 &lhs, L2 &rhs) {
+  typename L1::iterator lit = lhs.begin();
+  typename L2::iterator rit = rhs.begin();
 
-    while (lit != lhs.end() || rit != rhs.end()) {
-      std::cout << "STD = " << *lit << " | FT = " << *rit << std::endl;
-      lit++;
-      rit++;
-    }
-    return true;
-  }
-
-  template <class L1, class L2>
-  void TEST_LIST(L1 &lhs, L2 &rhs, bool rev = false) {
-    (void)rev;
-    std::cout << "\nempty() : STD = " << lhs.empty() << " | FT = " << rhs.empty() << std::endl;
-    std::cout << "size() : STD = " << lhs.size() << " | FT = " << rhs.size() << std::endl;
-    std::cout << "max_size() : STD = " << lhs.max_size() << " | FT = " << rhs.max_size() << std::endl;
-    std::cout << "content : " << std::endl;
-
-    ITERATE_LIST(lhs, rhs);
-  }
-#else
-  template <class L1, class L2>
-  bool ITERATE_LIST(L1 &lhs, L2 &rhs) {
-    typename L1::iterator lit = lhs.begin();
-    typename L2::iterator rit = rhs.begin();
-
-    while (lit != lhs.end() || rit != rhs.end()) {
-      if (*lit != *rit)
-        return false;
-      lit++;
-      rit++;
-    }
-    if (lit != lhs.end() || rit != rhs.end())
+  while (lit != lhs.end() || rit != rhs.end()) {
+    if (*lit != *rit)
       return false;
-    return true;
+    lit++;
+    rit++;
   }
+  if (lit != lhs.end() || rit != rhs.end())
+    return false;
+  return true;
+}
 
-  template <class L1, class L2>
-  void TEST_LIST(L1 &lhs, L2 &rhs, bool rev = false) {
-    bool empty = lhs.empty() == rhs.empty();
-    bool size = lhs.size() == rhs.size();
-    bool max_size = lhs.max_size() == rhs.max_size();
-    bool content = false;
+template <class L1, class L2>
+void TEST_LIST(L1 &lhs, L2 &rhs, bool rev = false) {
+  bool empty = lhs.empty() == rhs.empty();
+  bool size = lhs.size() == rhs.size();
+  bool max_size = lhs.max_size() == rhs.max_size();
+  bool content = false;
 
-    if (rev)
-      content = ITERATE_LIST_REV(lhs, rhs);
-    else
-      content = ITERATE_LIST(lhs, rhs);
+  if (rev)
+    content = ITERATE_LIST_REV(lhs, rhs);
+  else
+    content = ITERATE_LIST(lhs, rhs);
 
-    if (empty && size && max_size && content)
-      OK;
-    else
-      KO;
-  }
-#endif
-
+  if (empty && size && max_size && content)
+    OK;
+  else
+    KO;
+}
 
 void list_constructors() {
   std::list<int> real;
@@ -134,6 +107,15 @@ void list_push_back() {
   TEST(real.back(), mine.back());
   TEST_LIST(real, mine);
   TEST_LIST(real, mine, true);
+
+  std::list<std::string> letters;
+  letters.push_back("abc");
+  ft::list<std::string> letters2;
+  letters2.push_back("abc");
+  std::string s = "def";
+  letters.push_back(std::move(s));
+  letters2.push_back(std::move(s));
+  TEST_LIST(letters, letters2);
 }
 
 void list_size() {
@@ -206,6 +188,12 @@ void list_max_size() {
   TEST(real6.max_size(), mine6.max_size());
 }
 
+void list_capacity() {
+  list_size();
+  list_empty();
+  list_max_size();
+}
+
 void list_erase() {
   std::list<int> real;
   ft::list<int> mine;
@@ -220,6 +208,38 @@ void list_erase() {
   real_it = real.erase(real.begin());
   my_it = mine.erase(mine.begin());
   TEST(my_it, mine.end());
+}
+
+void list_insert() {
+  std::list<int> real;
+  std::list<int>::iterator it;
+
+  for (int i=1; i<=5; ++i) real.push_back(i);
+
+  it = real.begin();
+  ++it;
+
+  real.insert (it,10);
+  real.insert (it,2,20);
+  --it;
+  std::vector<int> realvector (2,30);
+  real.insert (it,realvector.begin(),realvector.end());
+
+  ft::list<int> mine;
+  ft::list<int>::iterator myit;
+
+  for (int i=1; i<=5; ++i) mine.push_back(i);
+
+  myit = mine.begin();
+  ++myit;
+
+  mine.insert (myit,10);
+  mine.insert (myit,2,20);
+  --myit;
+  ft::vector<int> minevector (2,30);
+  mine.insert (myit,minevector.begin(),minevector.end());
+
+  TEST_LIST(real, mine);
 }
 
 bool compare_nocase (const std::string& first, const std::string& second)
@@ -334,6 +354,26 @@ void list_remove() {
   real.remove(5);
   mine.remove(5);
 
+  TEST_LIST(real, mine);
+}
+
+bool single_digit (const int& value) { return (value<10); }
+
+// a predicate implemented as a class:
+struct is_odd {
+  bool operator() (const int& value) { return (value%2)==1; }
+};
+
+void list_remove_if() {
+  int myints[]= {15,36,7,17,20,39,4,1};
+  std::list<int> real (myints,myints+8);
+  ft::list<int> mine (myints,myints+8);
+
+  TEST_LIST(real, mine);
+  real.remove_if (single_digit);
+  real.remove_if (is_odd());
+  mine.remove_if (single_digit);
+  mine.remove_if (is_odd());
   TEST_LIST(real, mine);
 }
 
@@ -585,48 +625,38 @@ void list_operators() {
   TEST_LIST(real, mine);
 }
 
+void list_modifiers() {
+  list_push_front();
+  list_push_back();
+  list_insert();
+  list_erase();
+}
+
+void list_operations() {
+  list_splice();
+  list_remove();
+  list_remove_if();
+  list_unique();
+  list_reverse();
+  list_merge();
+  list_sort();
+  list_swap();
+}
+
 int test_list() {
+  std::cout << "List " << std::endl;
+
   FCT_TEST("constructors");
   list_constructors();
 
-  FCT_TEST("push_front");
-  list_push_front();
+  FCT_TEST("capacity");
+  list_capacity();
 
-  FCT_TEST("push_back");
-  list_push_back();
+  FCT_TEST("modifiers");
+  list_modifiers();
 
-  FCT_TEST("size");
-  list_size();
-
-  FCT_TEST("empty");
-  list_empty();
-
-  FCT_TEST("max_size");
-  list_max_size();
-
-  FCT_TEST("erase");
-  list_erase();
-
-  FCT_TEST("sort");
-  list_sort();
-
-  FCT_TEST("remove");
-  list_remove();
-
-  FCT_TEST("unique");
-  list_unique();
-
-  FCT_TEST("splice");
-  list_splice();
-
-  FCT_TEST("reverse");
-  list_reverse();
-
-  FCT_TEST("merge");
-  list_merge();
-
-  FCT_TEST("swap");
-  list_swap();
+  FCT_TEST("operations");
+  list_operations();
 
   FCT_TEST("iterators");
   list_iterators();
