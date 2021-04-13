@@ -75,7 +75,7 @@ namespace ft {
 
     ~vector() {
       clear();
-      alloc_.deallocate(container_, capacity_);
+      alloc_.deallocate(container_, capacity_ + 1);
     };
 
     iterator begin()              { return iterator(container_); };
@@ -103,7 +103,7 @@ namespace ft {
         }
       }
       while (size_ < n) {
-        insert(end(), val);
+        push_back(val);
       }
       while (size_ > n) {
         pop_back();
@@ -119,13 +119,13 @@ namespace ft {
       if (n < capacity_)
         return;
 
-      value_type *new_container = alloc_.allocate(sizeof(T) * n);
+      value_type *new_container = alloc_.allocate(n + 1);
 
       for (size_type i = 0; i < size_; i++) {
         alloc_.construct(&new_container[i], container_[i]);
         alloc_.destroy(&container_[i]);
       }
-      alloc_.deallocate(container_, capacity_);
+      alloc_.deallocate(container_, capacity_ + 1);
       capacity_ = n;
       container_ = new_container;
     };
@@ -168,10 +168,12 @@ namespace ft {
       clear();
       InputIterator tmp = first;
       difference_type n = 0;
+
       while (tmp != last) {
         n++;
         tmp++;
       }
+
       reserve(n);
       insert(begin(), first, last);
     };
@@ -284,8 +286,10 @@ namespace ft {
       alloc_.destroy(&container_[index]);
       size_--;
       if (index < size_) {
-        for (size_type i = index; i < size_; i++)
+        for (size_type i = index; i < size_; i++) {
           alloc_.construct(&container_[i], container_[i + 1]);
+          alloc_.destroy(&container_[i + 1]);
+        }
       }
       return iterator(&container_[index]);
     };
@@ -294,6 +298,9 @@ namespace ft {
       size_type start = first - begin();
       difference_type offset = last - first;
 
+      if (first == last)
+        return iterator(first);
+
       for (iterator it = first; it != last; it++)
         alloc_.destroy(&(*it));
 
@@ -301,6 +308,7 @@ namespace ft {
       if (start < size_) {
         for (size_type i = start; i < size_; i++) {
           alloc_.construct(&container_[i], container_[i + offset]);
+          alloc_.destroy(&container_[i + offset]);
         }
       }
       return iterator(&container_[start]);
