@@ -75,13 +75,13 @@ namespace ft {
 
     ~vector() {
       clear();
-      alloc_.deallocate(container_, capacity_ + 1);
+      alloc_.deallocate(container_, capacity_);
     };
 
     iterator begin()              { return iterator(container_); };
     const_iterator begin() const  { return const_iterator(container_); };
-    iterator end()                { return iterator(&container_[size_]); };
-    const_iterator end() const    { return const_iterator(&container_[size_]); };
+    iterator end()                { return iterator(container_ + size_); };
+    const_iterator end() const    { return const_iterator(container_ + size_); };
 
     reverse_iterator rbegin()             { return reverse_iterator(end()); };
     reverse_iterator rend()               { return reverse_iterator(begin()); };
@@ -96,8 +96,8 @@ namespace ft {
         if (capacity_ == 0)
           reserve(n);
         else {
-          if (capacity_ * 2 >= n)
-            reserve(capacity_ * 2);
+          if (size_ * 2 >= n)
+            reserve(size_ * 2);
           else
             reserve(n);
         }
@@ -119,13 +119,13 @@ namespace ft {
       if (n < capacity_)
         return;
 
-      value_type *new_container = alloc_.allocate(n + 1);
+      value_type *new_container = alloc_.allocate(n);
 
       for (size_type i = 0; i < size_; i++) {
         alloc_.construct(&new_container[i], container_[i]);
         alloc_.destroy(&container_[i]);
       }
-      alloc_.deallocate(container_, capacity_ + 1);
+      alloc_.deallocate(container_, capacity_);
       capacity_ = n;
       container_ = new_container;
     };
@@ -213,7 +213,7 @@ namespace ft {
       }
       size_++;
       if (index < size_) {
-        for (size_type i = size_; i > index; i--) {
+        for (size_type i = size_ - 1; i > index; i--) {
           alloc_.construct(&container_[i], container_[i - 1]);
           alloc_.destroy(&container_[i - 1]);
         }
