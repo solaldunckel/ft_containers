@@ -67,6 +67,8 @@ namespace ft {
     };
 
     vector& operator= (const vector& x) {
+      if (&x == this)
+        return *this;
       assign(x.begin(), x.end());
       return *this;
     };
@@ -290,12 +292,11 @@ namespace ft {
 
     iterator erase (iterator first, iterator last) {
       size_type start = first - begin();
-      size_type end = last - begin();
-      difference_type offset = end - start;
+      difference_type offset = last - first;
 
-      for (size_type i = start; i < end; i++) {
-        alloc_.destroy(&container_[i]);
-      }
+      for (iterator it = first; it != last; it++)
+        alloc_.destroy(&(*it));
+
       size_ -= offset;
       if (start < size_) {
         for (size_type i = start; i < size_; i++) {
