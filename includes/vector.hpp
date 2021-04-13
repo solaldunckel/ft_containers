@@ -229,8 +229,8 @@ namespace ft {
         if (capacity_ == 0)
           reserve(n);
         else {
-          if (capacity_ * 2 >= size_ + n)
-            reserve(capacity_ * 2);
+          if (size_ * 2 >= size_ + n)
+            reserve(size_ * 2);
           else
             reserve(size_ + n);
         }
@@ -262,8 +262,8 @@ namespace ft {
         if (capacity_ == 0)
           reserve(n);
         else {
-          if (capacity_ * 2 >= size_ + n)
-            reserve(capacity_ * 2);
+          if (size_ * 2 >= size_ + n)
+            reserve(size_ * 2);
           else
             reserve(size_ + n);
         }
