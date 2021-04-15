@@ -4,9 +4,11 @@
 
 ## Description
 
-ft_containers is a project written in C++ that ask you to reimplement a few containers from the STL.
+ft_containers is a project written in C++ which require you to reimplement a few containers from the STL.
 
 They must have all public member functions from C++98.
+
+The corresponding iterators must also be implemented.
 
 ## Containers
 
@@ -18,7 +20,7 @@ Implemented as a linked-list.
 
 ### Vector
 
-Unordered container with fast access time with `[]`.
+Unordered container with fast access time with `operator[]`.
 
 Implemented as an array, similar to standard C arrays.
   
@@ -42,13 +44,12 @@ Can be templated with any container supporting `push_back` `pop_front` `back` `f
 
 ## Usage
 
-* Include :
 ```c++
-#include "includes/list.hpp"
-#include "includes/vector.hpp"
-#include "includes/map.hpp"
-#include "includes/stack.hpp"
-#include "includes/queue.hpp"
+# include "includes/list.hpp"
+# include "includes/vector.hpp"
+# include "includes/map.hpp"
+# include "includes/stack.hpp"
+# include "includes/queue.hpp"
 
 // Containers are in the 'ft' namespace
 
@@ -59,12 +60,11 @@ ft:stack<int> stack;
 ft::queue<int> queue;
 ```
 
-* Test :
 ```shell
 # Compile the sources
 make
 
-# Run the tester
+# Run the tests
 ./ft_containers_test [container_name] ..
 ```
 
