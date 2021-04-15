@@ -1,5 +1,7 @@
 # ft_containers
 
+![containers](https://i.imgur.com/N63CEIw.png)
+
 ## Description
 
 ft_containers is a project written in C++ that ask you to reimplement a few containers from the STL.
