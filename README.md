@@ -2,9 +2,11 @@
 
 ## Description
 
-ft_containers is a project written in C++ that ask you to reimplement a few containers from the STL...
+ft_containers is a project written in C++ that ask you to reimplement a few containers from the STL.
 
-The required containers are :
+They must have all public member functions from C++98.
+
+## Containers
 
 ### List
 
@@ -20,7 +22,7 @@ Implemented as an array, similar to standard C arrays.
   
 ### Map
 
-Stores pairs `key = value` and is sorted with its `key`.
+Stores pairs `key = value` and is sorted by `key` (custom function for sorting can be templated).
 
 Implemented as a Binary Search Tree (BST)
 
