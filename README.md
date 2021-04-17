@@ -14,7 +14,7 @@ The corresponding iterators must also be implemented.
 
 ### List
 
-Unordered container with constant time for inserting/deleting elements. Searching an element is O(n).
+Unordered container with constant time for inserting/deleting elements.
 
 Implemented as a linked-list.
 
@@ -75,6 +75,6 @@ make
 - [Reverse Iterator Reference](http://www.cplusplus.com/reference/iterator/reverse_iterator/)
 
 ## Unit Tests
-- [mli42](https://github.com/mli42/containers_test)
-- [llefranc](https://github.com/llefranc/42_Containator)
-- [Mazoise](https://github.com/Mazoise/FT_CONTAINERS_TESTER)
+- [containers_test](https://github.com/mli42/containers_test) by [@mli42](https://github.com/mli42)
+- [42_Containator](https://github.com/llefranc/42_Containator) by [@llefranc](https://github.com/llefranc)
+- [FT_CONTAINERS_TESTER](https://github.com/Mazoise/FT_CONTAINERS_TESTER) by [@Mazoise](https://github.com/Mazoise)
